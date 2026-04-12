@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Domain/">
+    <Project Path="Storygame.Domain.Catalog/Storygame.Domain.Catalog.csproj" Id="81bb21cf-ed0d-4f6a-b4d9-23af71bd027e" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
