@@ -1,0 +1,6 @@
+@Storygame.Web_HostAddress = http://localhost:5263
+
+GET {{Storygame.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
