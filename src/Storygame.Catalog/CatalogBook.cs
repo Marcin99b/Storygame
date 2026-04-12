@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Storygame.Domain.Catalog;
+namespace Storygame.Catalog;
 
 public class Book
 {

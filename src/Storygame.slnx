@@ -1,10 +1,8 @@
 <Solution>
-  <Folder Name="/Domain/">
-    <Project Path="Storygame.Domain.Catalog/Storygame.Domain.Catalog.csproj" Id="81bb21cf-ed0d-4f6a-b4d9-23af71bd027e" />
-  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="Storygame.Catalog/Storygame.Catalog.csproj" />
   <Project Path="Storygame.Cqrs/Storygame.Cqrs.csproj" Id="abeddef5-3330-41d6-80e5-e0501efdec2e" />
   <Project Path="Storygame.Web/Storygame.Web.csproj" Id="5ad8d628-e128-4138-9f45-d5b8ae5a78f4" />
 </Solution>
