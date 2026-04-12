@@ -1,4 +1,8 @@
 using Storygame.Cqrs;
+using Storygame.Web.Areas.Catalog;
+using Storygame.Web.Areas.Library;
+using Storygame.Web.Areas.Tracking;
+using Storygame.Web.Areas.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +16,12 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi("/swagger");
 }
+
+app
+    .MapCatalogEndpoints()
+    .MapLibraryEndpoints()
+    .MapTrackingEndpoints()
+    .MapUsersEndpoints();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

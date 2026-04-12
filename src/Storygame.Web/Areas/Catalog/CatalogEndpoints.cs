@@ -1,4 +1,7 @@
-﻿namespace Storygame.Web.Areas.Catalog;
+﻿using Storygame.Catalog.Queries;
+using Storygame.Cqrs;
+
+namespace Storygame.Web.Areas.Catalog;
 
 public static class CatalogEndpoints
 {
@@ -12,6 +15,8 @@ public static class CatalogEndpoints
         return app;
     }
 
-    public static Task GetCatalog() => Task.CompletedTask;
+    public static Task<SearchCatalogQueryResult> GetCatalog(IDispatcher dispatcher)
+        => dispatcher.QueryAsync<SearchCatalogQuery, SearchCatalogQueryResult>(new SearchCatalogQuery());
+
     public static Task GetCatalogBookById() => Task.CompletedTask;
 }

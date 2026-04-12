@@ -21,7 +21,7 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
     {
         new Book
         {
-            Id = Guid.Parse("d2719f2a-1c3b-4d5a-9f2e-111111111111"),
+            Id = Guid.NewGuid(),
             Title = "The Lost Kingdom",
             Description = "An epic fantasy of adventure and discovery.",
             TextEditionFields = new TextEditionFields { Exist = true, TotalPages = 412 },
@@ -29,7 +29,7 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
         },
         new Book
         {
-            Id = Guid.Parse("a4729b3c-2d4e-4f6b-8a3f-222222222222"),
+            Id = Guid.NewGuid(),
             Title = "Learning C#",
             Description = "A practical guide to modern C# programming.",
             TextEditionFields = new TextEditionFields { Exist = true, TotalPages = 280 },
@@ -37,7 +37,7 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
         },
         new Book
         {
-            Id = Guid.Parse("b583ac4d-3e5f-5a7c-9b4g-333333333333"),
+            Id = Guid.NewGuid(),
             Title = "Short Stories Collection",
             Description = "A collection of short fictional pieces.",
             TextEditionFields = new TextEditionFields { Exist = false, TotalPages = 0 },

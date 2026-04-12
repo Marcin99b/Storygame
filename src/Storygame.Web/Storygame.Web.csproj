@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Storygame.Catalog\Storygame.Catalog.csproj" />
     <ProjectReference Include="..\Storygame.Cqrs\Storygame.Cqrs.csproj" />
   </ItemGroup>
 
