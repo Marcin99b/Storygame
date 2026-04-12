@@ -11,12 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Books\" />
-    <Folder Include="Areas\Tracking\" />
-    <Folder Include="Areas\Users\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Storygame.Cqrs\Storygame.Cqrs.csproj" />
   </ItemGroup>
 
