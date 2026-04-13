@@ -7,6 +7,7 @@ namespace Storygame.Library;
 public class Book
 {
     public required Guid Id { get; set; }
+    public required Guid? CatalogBookId { get; set; }
     public required Guid? ImageId { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }
