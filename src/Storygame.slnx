@@ -7,5 +7,6 @@
   </Folder>
   <Project Path="Storygame.Catalog/Storygame.Catalog.csproj" />
   <Project Path="Storygame.Library/Storygame.Library.csproj" Id="73e77672-187c-4a7c-8b85-1ce0dad3103a" />
+  <Project Path="Storygame.Tracking/Storygame.Tracking.csproj" Id="b4783af4-fa21-44a1-8afe-6c2123e8c9f4" />
   <Project Path="Storygame.Web/Storygame.Web.csproj" Id="5ad8d628-e128-4138-9f45-d5b8ae5a78f4" />
 </Solution>
