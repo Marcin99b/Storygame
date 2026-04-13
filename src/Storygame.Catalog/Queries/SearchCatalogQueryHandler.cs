@@ -22,6 +22,7 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
         new Book
         {
             Id = Guid.NewGuid(),
+            ImageId = null,
             Title = "The Lost Kingdom",
             Description = "An epic fantasy of adventure and discovery.",
             TextEditionFields = new TextEditionFields { Exist = true, TotalPages = 412 },
@@ -30,6 +31,7 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
         new Book
         {
             Id = Guid.NewGuid(),
+            ImageId = null,
             Title = "Learning C#",
             Description = "A practical guide to modern C# programming.",
             TextEditionFields = new TextEditionFields { Exist = true, TotalPages = 280 },
@@ -38,6 +40,7 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
         new Book
         {
             Id = Guid.NewGuid(),
+            ImageId = null,
             Title = "Short Stories Collection",
             Description = "A collection of short fictional pieces.",
             TextEditionFields = new TextEditionFields { Exist = false, TotalPages = 0 },
