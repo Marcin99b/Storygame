@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="3.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Storygame.Catalog\Storygame.Catalog.csproj" />
+    <ProjectReference Include="..\Storygame.Library\Storygame.Library.csproj" />
+    <ProjectReference Include="..\Storygame.Tracking\Storygame.Tracking.csproj" />
+    <ProjectReference Include="..\Storygame.Users\Storygame.Users.csproj" />
+  </ItemGroup>
+
+</Project>

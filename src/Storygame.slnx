@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Commons/">
     <Project Path="Storygame.Cqrs/Storygame.Cqrs.csproj" Id="abeddef5-3330-41d6-80e5-e0501efdec2e" />
+    <Project Path="Storygame.Storage/Storygame.Storage.csproj" Id="0e3da128-3099-4a63-b10e-7a682dbd696a" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
