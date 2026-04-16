@@ -9,9 +9,9 @@ using Storygame.Catalog;
 namespace Storygame.Catalog.Queries;
 
 public record SearchCatalogQuery(
-    string? titleContains = null, 
-    bool? hasTextEdition = null, 
-    bool? hasAudiobook = null) 
+    string? TitleContains = null, 
+    bool? HasTextEdition = null, 
+    bool? HasAudiobook = null) 
     : IQuery<SearchCatalogQueryResult>;
 public record SearchCatalogQueryResult(IEnumerable<Book> Books);
 
@@ -19,6 +19,7 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
 {
     private readonly IEnumerable<Book> memoryBooks = new List<Book>()
     {
+        //todo: move to collection in mongodb
         new Book
         {
             Id = Guid.NewGuid(),
@@ -50,27 +51,22 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
 
     public Task<SearchCatalogQueryResult> HandleAsync(SearchCatalogQuery query)
     {
-        var filtered = memoryBooks.Where(x =>
+        var filtered = memoryBooks;
+        if (query.TitleContains != null)
         {
-            if (query.titleContains != null && !x.Title.Contains(query.titleContains))
-            {
-                return false;
-            }
+            filtered = filtered.Where(x => x.Title.Contains(query.TitleContains));
+        }
+        if (query.HasTextEdition.HasValue)
+        {
+            filtered = filtered.Where(x => x.TextEditionFields.Exist == query.HasTextEdition.Value);
+        }
+        if (query.HasAudiobook.HasValue)
+        {
+            filtered = filtered.Where(x => x.AudiobookFields.Exist == query.HasAudiobook.Value);
+        }
 
-            if (query.hasTextEdition.HasValue && x.TextEditionFields.Exist != query.hasTextEdition.Value)
-            {
-                return false;
-            }
-
-            if (query.hasAudiobook.HasValue && x.AudiobookFields.Exist != query.hasAudiobook.Value)
-            {
-                return false;
-            }
-
-            return true;
-        }).ToArray();
-
-        var result = new SearchCatalogQueryResult(filtered);
+        var array = filtered.ToArray();
+        var result = new SearchCatalogQueryResult(array);
         return Task.FromResult(result);
     }
 }
