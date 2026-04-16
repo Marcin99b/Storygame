@@ -24,7 +24,7 @@ StorageModule.Initialize();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi("/swagger");
+    app.MapOpenApi();
 }
 
 app.MapHealthChecks("/hc", new HealthCheckOptions()
