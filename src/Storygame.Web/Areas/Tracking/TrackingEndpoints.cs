@@ -19,6 +19,6 @@ public static class TrackingEndpoints
     }
 
     public static Task GetTrackings() => Task.CompletedTask;
-    public static Task StartTracking(IDispatcher dispatcher, [FromRoute] Guid libraryBookId, [FromBody] StartTrackingRequest request) 
-        => dispatcher.SendAsync(new StartTrackingBookCommand(libraryBookId, Guid.Empty, request.TotalLength));
+    public static Task StartTracking(IDispatcher dispatcher, UserSession userSession, [FromRoute] Guid libraryBookId, [FromBody] StartTrackingRequest request) 
+        => dispatcher.SendAsync(new StartTrackingBookCommand(libraryBookId, userSession.UserId!.Value, request.TotalLength));
 }

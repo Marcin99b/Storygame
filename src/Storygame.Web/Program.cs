@@ -41,6 +41,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         };
     });
 
+builder.Services.AddScoped<UserSession>();
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -87,9 +89,29 @@ app
     .MapTrackingEndpoints()
     .MapUsersEndpoints();
 
+app.Use((ctx, next) => 
+{
+    if (ctx.User.Identity?.IsAuthenticated == true && Guid.TryParse(ctx.User.Identity.Name, out var userId))
+    {
+        var session = ctx.RequestServices.GetService<UserSession>();
+        if (session != null)
+        {
+            session.UserId = userId;
+        }
+    }
+    
+    return next(ctx);
+});
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
+
+
+public class UserSession
+{
+    public Guid? UserId { get; set; }
+}

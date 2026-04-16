@@ -21,9 +21,9 @@ public static class LibraryEndpoints
         return app;
     }
 
-    public static Task GetLibrary(IDispatcher dispatcher) 
-        => dispatcher.QueryAsync<GetUserBooksFromLibraryQuery, GetUserBooksFromLibraryQueryResult>(new GetUserBooksFromLibraryQuery(Guid.Empty));
+    public static Task GetLibrary(IDispatcher dispatcher, UserSession userSession) 
+        => dispatcher.QueryAsync<GetUserBooksFromLibraryQuery, GetUserBooksFromLibraryQueryResult>(new GetUserBooksFromLibraryQuery(userSession.UserId!.Value));
 
-    public static Task AddToLibrary(IDispatcher dispatcher, [FromBody] AddToLibraryRequest request)
-        => dispatcher.SendAsync(new AddBookToLibraryCommand(Guid.Empty, request.CatalogBookId, request.ImageId, request.Title, request.Description, request.MediaType, request.Length));
+    public static Task AddToLibrary(IDispatcher dispatcher, UserSession userSession, [FromBody] AddToLibraryRequest request)
+        => dispatcher.SendAsync(new AddBookToLibraryCommand(userSession.UserId!.Value, request.CatalogBookId, request.ImageId, request.Title, request.Description, request.MediaType, request.Length));
 }
