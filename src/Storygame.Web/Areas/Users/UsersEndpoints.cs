@@ -1,5 +1,4 @@
-﻿using DnsClient;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Storygame.Users;
 using System.Security.Claims;
