@@ -10,7 +10,7 @@ public static class TrackingEndpoints
 {
     public static IEndpointRouteBuilder MapTrackingEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/tracking").WithTags("Tracking");
+        var group = app.MapGroup("/api/tracking").WithTags("Tracking").RequireAuthorization();
 
         group.MapGet("/", GetTrackings);
         group.MapPost("/{id:guid}", StartTracking);

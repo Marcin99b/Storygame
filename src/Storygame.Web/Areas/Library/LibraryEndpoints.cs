@@ -13,7 +13,7 @@ public static class LibraryEndpoints
 {
     public static IEndpointRouteBuilder MapLibraryEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/library").WithTags("Library");
+        var group = app.MapGroup("/api/library").WithTags("Library").RequireAuthorization();
 
         group.MapGet("/", GetLibrary);
         group.MapPost("/", AddToLibrary);
