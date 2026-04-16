@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
   </ItemGroup>
 
@@ -14,6 +15,7 @@
     <ProjectReference Include="..\Storygame.Catalog\Storygame.Catalog.csproj" />
     <ProjectReference Include="..\Storygame.Cqrs\Storygame.Cqrs.csproj" />
     <ProjectReference Include="..\Storygame.Library\Storygame.Library.csproj" />
+    <ProjectReference Include="..\Storygame.Storage\Storygame.Storage.csproj" />
     <ProjectReference Include="..\Storygame.Tracking\Storygame.Tracking.csproj" />
     <ProjectReference Include="..\Storygame.Users\Storygame.Users.csproj" />
   </ItemGroup>

@@ -1,12 +1,15 @@
-﻿using Storygame.Library;
+﻿using MongoDB.Driver;
+using Storygame.Library;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Storygame.Storage;
 
-public class LibraryRepository : ILibraryRepository
+public class LibraryRepository(IMongoDatabase database) : ILibraryRepository
 {
+    private readonly IMongoCollection<Book> books = database.GetCollection<Book>(DbCollectionNames.LIBRARY_BOOKS);
+
     public void AddBook(Book book)
     {
     }
