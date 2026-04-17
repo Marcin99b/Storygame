@@ -32,14 +32,7 @@ public static class UsersEndpoints
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 
-        var authProps = new AuthenticationProperties
-        {
-            IsPersistent = true,
-            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7),
-            AllowRefresh = true,
-        };
-
-        await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProps);
+        await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
     }
 
     public static Task Logout(HttpContext http) => http.SignOutAsync();

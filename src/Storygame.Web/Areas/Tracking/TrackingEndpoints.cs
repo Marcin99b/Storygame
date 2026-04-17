@@ -13,7 +13,7 @@ public static class TrackingEndpoints
         var group = app.MapGroup("/api/tracking").WithTags("Tracking").RequireAuthorization();
 
         group.MapGet("/", GetTrackings);
-        group.MapPost("/{id:guid}", StartTracking);
+        group.MapPost("/{libraryBookId:guid}", StartTracking);
 
         return app;
     }
