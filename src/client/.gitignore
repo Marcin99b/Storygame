@@ -6,3 +6,4 @@
 /.react-router/
 /build/
 .lock
+yarn.lock
