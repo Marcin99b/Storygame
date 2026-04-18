@@ -14,5 +14,15 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    middleware: [
+      (req, res, next) => {
+        if (req.url?.startsWith("/.well-known/appspecific/")) {
+          res.setHeader("Content-Type", "application/json");
+          res.end("{}");
+          return;
+        }
+        next();
+      },
+    ],
   },
 });

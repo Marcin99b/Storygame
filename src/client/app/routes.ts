@@ -6,4 +6,5 @@ export default [
     index("routes/library.tsx"),
     route("catalog", "routes/catalog.tsx"),
   ]),
+  route("*", "routes/not-found.tsx"),
 ] satisfies RouteConfig;
