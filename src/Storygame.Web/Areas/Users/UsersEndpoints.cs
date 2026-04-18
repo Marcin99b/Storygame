@@ -21,7 +21,8 @@ public static class UsersEndpoints
         return app;
     }
 
-    public static Task GetMe() => Task.FromResult(new MeResponse("TestUser", true));
+    public static Task<MeResponse> GetMe() => Task.FromResult(new MeResponse("TestUser", true));
+
     public static async Task Login(HttpContext http)
     {
         var claims = new List<Claim>

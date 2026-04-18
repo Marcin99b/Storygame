@@ -21,7 +21,7 @@ public static class LibraryEndpoints
         return app;
     }
 
-    public static Task GetLibrary(IDispatcher dispatcher, UserSession userSession) 
+    public static Task<GetUserBooksFromLibraryQueryResult> GetLibrary(IDispatcher dispatcher, UserSession userSession) 
         => dispatcher.QueryAsync<GetUserBooksFromLibraryQuery, GetUserBooksFromLibraryQueryResult>(new GetUserBooksFromLibraryQuery(userSession.UserId!.Value));
 
     public static Task AddToLibrary(IDispatcher dispatcher, UserSession userSession, [FromBody] AddToLibraryRequest request)

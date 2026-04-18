@@ -7,6 +7,7 @@ using Storygame.Web.Areas.Catalog;
 using Storygame.Web.Areas.Library;
 using Storygame.Web.Areas.Tracking;
 using Storygame.Web.Areas.Users;
+using System.Security.Claims;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -95,15 +96,12 @@ app.MapHealthChecks("/hc", new HealthCheckOptions()
     }
 });
 
-app
-    .MapCatalogEndpoints()
-    .MapLibraryEndpoints()
-    .MapTrackingEndpoints()
-    .MapUsersEndpoints();
+app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.Use((ctx, next) => 
 {
-    if (ctx.User.Identity?.IsAuthenticated == true && Guid.TryParse(ctx.User.Identity.Name, out var userId))
+    if (ctx.User.Identity?.IsAuthenticated == true && Guid.TryParse(ctx.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out var userId))
     {
         var session = ctx.RequestServices.GetService<UserSession>();
         if (session != null)
@@ -111,13 +109,18 @@ app.Use((ctx, next) =>
             session.UserId = userId;
         }
     }
-    
+
     return next(ctx);
 });
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
-app.UseAuthentication();
+
+app
+    .MapCatalogEndpoints()
+    .MapLibraryEndpoints()
+    .MapTrackingEndpoints()
+    .MapUsersEndpoints();
+
 app.MapControllers();
 
 app.Run();
