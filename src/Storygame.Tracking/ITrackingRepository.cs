@@ -8,4 +8,5 @@ public interface ITrackingRepository
 {
     void AddTracking(Tracking tracking);
     Task<bool> CheckIfBookIsAlreadyTracked(Guid libraryBookId);
+    Task<IEnumerable<Tracking>> GetUserTrackings(Guid userId);
 }
