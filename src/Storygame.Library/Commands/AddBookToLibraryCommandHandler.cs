@@ -12,7 +12,7 @@ public class AddBookToLibraryCommandHandler(ILibraryRepository libraryRepository
     public async Task HandleAsync(AddBookToLibraryCommand command)
     {
         var alreadyExist = command.CatalogBookId.HasValue 
-            && await libraryRepository.CheckIfUserAlreadyHasThisBook(command.CatalogBookId.Value, command.MediaType);
+            && await libraryRepository.CheckIfUserAlreadyHasThisBook(command.UserId, command.CatalogBookId.Value, command.MediaType);
         if (alreadyExist)
         {
             throw new ArgumentException($"User already has book: {command.CatalogBookId!.Value} with media type: {command.MediaType.ToString()}");

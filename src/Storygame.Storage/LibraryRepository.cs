@@ -17,7 +17,8 @@ public class LibraryRepository(IMongoDatabase database) : ILibraryRepository
         books.InsertOne(book);
     }
 
-    public Task<bool> CheckIfUserAlreadyHasThisBook(Guid catalogBookId, MediaType mediaType) => throw new NotImplementedException();
+    public async Task<bool> CheckIfUserAlreadyHasThisBook(Guid userId, Guid catalogBookId, MediaType mediaType)
+        => await books.CountDocumentsAsync(x => x.UserId == userId && x.CatalogBookId == catalogBookId && x.MediaType == mediaType) > 0;
 
     public async Task<IEnumerable<Book>> GetUserBooks(Guid userId) 
         => await books.AsQueryable().Where(x => x.UserId == userId).ToListAsync();
