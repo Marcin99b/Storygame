@@ -16,7 +16,7 @@ public static class TrackingEndpoints
 
         group.MapGet("/", GetTrackings);
         group.MapPost("/", StartTracking);
-        group.MapPost("/{libraryBookId:guid}/index", UpdateIndex);
+        group.MapPost("/{trackingId:guid}/index", UpdateIndex);
 
         return app;
     }
