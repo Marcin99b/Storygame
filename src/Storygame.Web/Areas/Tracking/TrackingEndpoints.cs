@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Storygame.Cqrs;
 using Storygame.Tracking.Commands;
+using Storygame.Tracking.Queries;
 
 namespace Storygame.Web.Areas.Tracking;
 
@@ -18,7 +19,8 @@ public static class TrackingEndpoints
         return app;
     }
 
-    public static Task GetTrackings() => Task.CompletedTask;
-    public static Task StartTracking(IDispatcher dispatcher, UserSession userSession, [FromRoute] Guid libraryBookId, [FromBody] StartTrackingRequest request) 
+    public static Task<GetUserTrackingsQueryResult> GetTrackings(IDispatcher dispatcher, UserSession userSession)
+        => dispatcher.QueryAsync<GetUserTrackingsQuery, GetUserTrackingsQueryResult>(new GetUserTrackingsQuery(userSession.UserId!.Value));
+    public static Task StartTracking(IDispatcher dispatcher, UserSession userSession, [FromRoute] Guid libraryBookId, [FromBody] StartTrackingRequest request)
         => dispatcher.SendAsync(new StartTrackingBookCommand(libraryBookId, userSession.UserId!.Value, request.TotalLength));
 }
