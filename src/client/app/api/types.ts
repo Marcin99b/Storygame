@@ -25,3 +25,13 @@ export interface UserProfile {
   name: string;
   isVerified: boolean;
 }
+
+export interface Tracking {
+  id: string;
+  libraryBookId: string;
+  userId: string;
+  totalLength: number;
+  currentIndex: number;
+  isStarted: boolean;
+  isFinished: boolean;
+}
