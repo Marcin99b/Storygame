@@ -18,4 +18,6 @@ public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
     {
         return await trackings.AsQueryable().Where(x => x.UserId == userId).ToListAsync();
     }
+
+    public Task<Tracking.Tracking> GetTracking(Guid trackingId) => trackings.AsQueryable().FirstOrDefaultAsync(x => x.Id == trackingId);
 }

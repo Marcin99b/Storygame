@@ -10,4 +10,5 @@ public interface ITrackingRepository
     Task UpdateTracking(Tracking tracking);
     Task<bool> CheckIfBookIsAlreadyTracked(Guid libraryBookId);
     Task<IEnumerable<Tracking>> GetUserTrackings(Guid userId);
+    Task<Tracking> GetTracking(Guid trackingId);
 }
