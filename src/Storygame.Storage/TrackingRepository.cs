@@ -6,14 +6,16 @@ namespace Storygame.Storage;
 
 public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
 {
-    private readonly IMongoCollection<Tracking.Tracking> tracking = database.GetCollection<Tracking.Tracking>(DbCollectionNames.Tracking);
+    private readonly IMongoCollection<Tracking.Tracking> trackings = database.GetCollection<Tracking.Tracking>(DbCollectionNames.Tracking);
 
-    public void AddTracking(Tracking.Tracking tracking) => throw new NotImplementedException();
+    public Task AddTracking(Tracking.Tracking tracking) => trackings.InsertOneAsync(tracking);
 
-    public Task<bool> CheckIfBookIsAlreadyTracked(Guid libraryBookId) => throw new NotImplementedException();
+    public async Task UpdateTracking(Tracking.Tracking tracking) => await trackings.ReplaceOneAsync(x => x.Id == tracking.Id, tracking);
+
+    public async Task<bool> CheckIfBookIsAlreadyTracked(Guid libraryBookId) => (await trackings.CountDocumentsAsync(x => x.LibraryBookId == libraryBookId)) > 0;
 
     public async Task<IEnumerable<Tracking.Tracking>> GetUserTrackings(Guid userId)
     {
-        return await tracking.AsQueryable().Where(x => x.UserId == userId).ToListAsync();
+        return await trackings.AsQueryable().Where(x => x.UserId == userId).ToListAsync();
     }
 }

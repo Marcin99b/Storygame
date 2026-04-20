@@ -6,7 +6,8 @@ namespace Storygame.Tracking;
 
 public interface ITrackingRepository
 {
-    void AddTracking(Tracking tracking);
+    Task AddTracking(Tracking tracking);
+    Task UpdateTracking(Tracking tracking);
     Task<bool> CheckIfBookIsAlreadyTracked(Guid libraryBookId);
     Task<IEnumerable<Tracking>> GetUserTrackings(Guid userId);
 }
