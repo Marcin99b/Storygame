@@ -1,4 +1,5 @@
 ﻿using Storygame.Cqrs;
+using Storygame.Tracking.Events;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ namespace Storygame.Tracking.Commands;
 
 public record StartTrackingBookCommand(Guid LibraryBookId, Guid UserId, int TotalLength) : ICommand;
 
-public class StartTrackingBookCommandHandler(ITrackingRepository trackingRepository) : ICommandHandler<StartTrackingBookCommand>
+public class StartTrackingBookCommandHandler(ITrackingRepository trackingRepository, IDispatcher dispatcher) : ICommandHandler<StartTrackingBookCommand>
 {
     public async Task HandleAsync(StartTrackingBookCommand command)
     {
@@ -25,6 +26,7 @@ public class StartTrackingBookCommandHandler(ITrackingRepository trackingReposit
             TotalLength = command.TotalLength
         };
 
-        trackingRepository.AddTracking(tracking);
+        await trackingRepository.AddTracking(tracking);
+        await dispatcher.PublishAsync(new TrackingStartedEvent(tracking.Id, tracking.LibraryBookId, tracking.UserId, tracking.TotalLength));
     }
 }
