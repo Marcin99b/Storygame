@@ -9,6 +9,7 @@ using Storygame.Web.Areas.Tracking;
 using Storygame.Web.Areas.Users;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,11 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddOpenApi();
 
 builder.Services.RegisterCqrs();
