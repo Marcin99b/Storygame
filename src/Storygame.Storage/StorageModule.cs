@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using Storygame.Library;
@@ -53,5 +55,7 @@ public static class StorageModule
             new EnumRepresentationConvention(BsonType.String),
         };
         ConventionRegistry.Register("conventions", pack, _ => true);
+        BsonSerializer.RegisterSerializer(typeof(Guid), new GuidSerializer(GuidRepresentation.Standard));
+        BsonSerializer.RegisterSerializer(typeof(Guid?), new NullableSerializer<Guid>(new GuidSerializer(GuidRepresentation.Standard)));
     }
 }
