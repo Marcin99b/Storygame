@@ -26,11 +26,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
     {
-        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(opts =>
 {
-    opts.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    opts.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    opts.SerializerOptions.PropertyNameCaseInsensitive = true;
 });
 
 builder.Services.AddOpenApi();
