@@ -11,6 +11,7 @@
     <File Path=".editorconfig" />
   </Folder>
   <Project Path="Storygame.Catalog/Storygame.Catalog.csproj" />
+  <Project Path="Storygame.Client/Storygame.Client.csproj" Id="a4ebf8cf-c5c9-4288-9fb6-55fa12327abb" />
   <Project Path="Storygame.Library/Storygame.Library.csproj" Id="73e77672-187c-4a7c-8b85-1ce0dad3103a" />
   <Project Path="Storygame.Tracking/Storygame.Tracking.csproj" Id="b4783af4-fa21-44a1-8afe-6c2123e8c9f4" />
   <Project Path="Storygame.Users/Storygame.Users.csproj" Id="6a36ab7f-680f-4e19-bc2d-a96d5bbf2155" />
