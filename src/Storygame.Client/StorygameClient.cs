@@ -1,4 +1,7 @@
 ﻿using Microsoft.Net.Http.Headers;
+using Storygame.Contracts.WebApi;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace Storygame.Client;
 
@@ -29,33 +32,17 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         client.DefaultRequestHeaders.Add(HeaderNames.Cookie, cookie);
     }
 
-    public async Task Me()
+    public async Task<MeResponse> Me()
     {
         var url = UsersPath + "/Me";
         var response = await client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<MeResponse>())!;
     }
 
-    public async Task GetTrackings()
+    public async Task GetCatalog()
     {
-        var url = TrackingPath;
-        var response = await client.GetAsync(url);
-    }
-
-    public async Task StartTracking()
-    {
-        var url = TrackingPath;
-        var response = await client.PostAsync(url, null);
-    }
-
-    public async Task UpdateIndex(Guid trackingId, int newIndex)
-    {
-        var url = TrackingPath + $"/{trackingId}/index";
-        var response = await client.PostAsync(url, null);
-    }
-
-    public async Task GetLibrary()
-    {
-        var url = LibraryPath;
+        var url = CatalogPath;
         var response = await client.GetAsync(url);
     }
 
@@ -65,9 +52,27 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         var response = await client.PostAsync(url, null);
     }
 
-    public async Task GetCatalog()
+    public async Task GetLibrary()
     {
-        var url = CatalogPath;
+        var url = LibraryPath;
         var response = await client.GetAsync(url);
+    }
+
+    public async Task StartTracking()
+    {
+        var url = TrackingPath;
+        var response = await client.PostAsync(url, null);
+    }
+
+    public async Task GetTrackings()
+    {
+        var url = TrackingPath;
+        var response = await client.GetAsync(url);
+    }
+
+    public async Task UpdateIndex(Guid trackingId, int newIndex)
+    {
+        var url = TrackingPath + $"/{trackingId}/index";
+        var response = await client.PostAsync(url, null);
     }
 }

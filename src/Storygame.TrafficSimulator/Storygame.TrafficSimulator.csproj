@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Storygame.Client\Storygame.Client.csproj" />
-    <ProjectReference Include="..\Storygame.Contracts.WebApi\Storygame.Contracts.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

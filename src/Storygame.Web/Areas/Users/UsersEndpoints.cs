@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Storygame.Contracts.WebApi;
 using Storygame.Users;
 using System.Security.Claims;
 
@@ -8,7 +9,6 @@ namespace Storygame.Web.Areas.Users;
 public static class UsersEndpoints
 {
     private static Guid currentUser = new Guid("56f95c72-24a4-48d5-88fc-d715288c51d5");
-    public record MeResponse(string Name, bool IsVerified);
 
     public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
     {
