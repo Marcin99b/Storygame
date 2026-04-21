@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using MongoDB.Driver;
 using Storygame.Cqrs;
+using Storygame.Logging;
 using Storygame.Storage;
 using Storygame.Web.Areas.Catalog;
 using Storygame.Web.Areas.Library;
@@ -39,6 +40,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.RegisterCqrs();
 builder.Services.RegisterStorage();
+builder.Services.RegisterLogging();
 
 builder.Services.AddHealthChecks().AddMongoDb(sp => sp.GetRequiredService<IMongoClient>(), name: "MongoDB");
 
