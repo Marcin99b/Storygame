@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Storygame.Catalog.Queries;
+using Storygame.Contracts.WebApi;
 using Storygame.Cqrs;
+using Storygame.Web.Extencions;
 
 namespace Storygame.Web.Areas.Catalog;
 
@@ -15,6 +17,7 @@ public static class CatalogEndpoints
         return app;
     }
 
-    public static Task<SearchCatalogQueryResult> GetCatalog(IDispatcher dispatcher, [FromQuery] string? titleContains, [FromQuery] bool? hasTextEdition, [FromQuery] bool? hasAudiobook)
-        => dispatcher.QueryAsync<SearchCatalogQuery, SearchCatalogQueryResult>(new SearchCatalogQuery(titleContains, hasTextEdition, hasAudiobook));
+    public static async Task<GetCatalogResponse> GetCatalog(IDispatcher dispatcher, [FromQuery] string? titleContains, [FromQuery] bool? hasTextEdition, [FromQuery] bool? hasAudiobook) 
+        => (await dispatcher.QueryAsync<SearchCatalogQuery, SearchCatalogQueryResult>(new SearchCatalogQuery(titleContains, hasTextEdition, hasAudiobook))).ToResponse();
 }
+
