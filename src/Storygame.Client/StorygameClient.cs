@@ -34,4 +34,40 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         var url = UsersPath + "/Me";
         var response = await client.GetAsync(url);
     }
+
+    public async Task GetTrackings()
+    {
+        var url = TrackingPath;
+        var response = await client.GetAsync(url);
+    }
+
+    public async Task StartTracking()
+    {
+        var url = TrackingPath;
+        var response = await client.PostAsync(url, null);
+    }
+
+    public async Task UpdateIndex(Guid trackingId, int newIndex)
+    {
+        var url = TrackingPath + $"/{trackingId}/index";
+        var response = await client.PostAsync(url, null);
+    }
+
+    public async Task GetLibrary()
+    {
+        var url = LibraryPath;
+        var response = await client.GetAsync(url);
+    }
+
+    public async Task AddToLibrary()
+    {
+        var url = LibraryPath;
+        var response = await client.PostAsync(url, null);
+    }
+
+    public async Task GetCatalog()
+    {
+        var url = CatalogPath;
+        var response = await client.GetAsync(url);
+    }
 }
