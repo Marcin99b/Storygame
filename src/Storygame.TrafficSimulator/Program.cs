@@ -4,5 +4,6 @@ var url = new Uri("https://localhost:7121");
 var client = new StorygameClient(url);
 
 await client.Login();
+await client.Me();
 
 await Task.Delay(-1);

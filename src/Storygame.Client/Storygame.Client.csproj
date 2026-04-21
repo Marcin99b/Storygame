@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="10.0.7" />
+  </ItemGroup>
+
 </Project>
