@@ -40,10 +40,12 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         return (await response.Content.ReadFromJsonAsync<MeResponse>())!;
     }
 
-    public async Task GetCatalog()
+    public async Task<GetCatalogResponse> GetCatalog()
     {
         var url = CatalogPath;
         var response = await client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<GetCatalogResponse>())!;
     }
 
     public async Task AddToLibrary()
