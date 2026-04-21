@@ -7,6 +7,9 @@
   <Folder Name="/Contracts/">
     <Project Path="Storygame.Contracts.WebApi/Storygame.Contracts.WebApi.csproj" Id="ed4ee1c5-b302-46da-86da-ff49ed36ad85" />
   </Folder>
+  <Folder Name="/Simulation/">
+    <Project Path="Storygame.TrafficSimulator/Storygame.TrafficSimulator.csproj" Id="26609c1a-921f-47a4-97f3-7c18ffe31b9d" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
