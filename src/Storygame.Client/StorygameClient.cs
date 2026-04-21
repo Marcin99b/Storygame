@@ -63,10 +63,11 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         return (await response.Content.ReadFromJsonAsync<GetLibraryResponse>())!;
     }
 
-    public async Task StartTracking()
+    public async Task StartTracking(StartTrackingRequest request)
     {
         var url = TrackingPath;
-        var response = await client.PostAsync(url, null);
+        var response = await client.PostAsJsonAsync(url, request);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task GetTrackings()
@@ -75,9 +76,10 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         var response = await client.GetAsync(url);
     }
 
-    public async Task UpdateIndex(Guid trackingId, int newIndex)
+    public async Task UpdateIndex(Guid trackingId, UpdateIndexRequest request)
     {
         var url = TrackingPath + $"/{trackingId}/index";
-        var response = await client.PostAsync(url, null);
+        var response = await client.PostAsJsonAsync(url, request);
+        response.EnsureSuccessStatusCode();
     }
 }
