@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Storygame.Contracts.WebApi;
 using Storygame.Cqrs;
 using Storygame.Tracking.Commands;
 using Storygame.Tracking.Queries;
 
 namespace Storygame.Web.Areas.Tracking;
-
-public record StartTrackingRequest(Guid LibraryBookId, int TotalLength);
-public record UpdateIndexRequest(int NewIndex);
 
 public static class TrackingEndpoints
 {

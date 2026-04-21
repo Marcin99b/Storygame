@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Storygame.Contracts.WebApi;
 using Storygame.Cqrs;
-using Storygame.Library;
 using Storygame.Library.Commands;
 using Storygame.Library.Queries;
 
 namespace Storygame.Web.Areas.Library;
-
-public record AddToLibraryRequest(Guid? CatalogBookId, Guid? ImageId, string Title, string Description, MediaType MediaType, int Length);
 
 public static class LibraryEndpoints
 {
@@ -25,5 +23,5 @@ public static class LibraryEndpoints
         => dispatcher.QueryAsync<GetUserBooksFromLibraryQuery, GetUserBooksFromLibraryQueryResult>(new GetUserBooksFromLibraryQuery(userSession.UserId!.Value));
 
     public static Task AddToLibrary(IDispatcher dispatcher, UserSession userSession, [FromBody] AddToLibraryRequest request)
-        => dispatcher.SendAsync(new AddBookToLibraryCommand(userSession.UserId!.Value, request.CatalogBookId, request.ImageId, request.Title, request.Description, request.MediaType, request.Length));
+        => dispatcher.SendAsync(new AddBookToLibraryCommand(userSession.UserId!.Value, request.CatalogBookId, request.ImageId, request.Title, request.Description, (Storygame.Library.MediaType)request.MediaType, request.Length));
 }

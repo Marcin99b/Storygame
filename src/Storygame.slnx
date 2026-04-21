@@ -4,6 +4,9 @@
     <Project Path="Storygame.Logging/Storygame.Logging.csproj" Id="0bb17deb-d0a5-44ac-9359-39aaffb409ca" />
     <Project Path="Storygame.Storage/Storygame.Storage.csproj" Id="0e3da128-3099-4a63-b10e-7a682dbd696a" />
   </Folder>
+  <Folder Name="/Contracts/">
+    <Project Path="Storygame.Contracts.WebApi/Storygame.Contracts.WebApi.csproj" Id="ed4ee1c5-b302-46da-86da-ff49ed36ad85" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>

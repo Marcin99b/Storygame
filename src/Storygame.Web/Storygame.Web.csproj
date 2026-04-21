@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Storygame.Catalog\Storygame.Catalog.csproj" />
+    <ProjectReference Include="..\Storygame.Contracts.WebApi\Storygame.Contracts.WebApi.csproj" />
     <ProjectReference Include="..\Storygame.Cqrs\Storygame.Cqrs.csproj" />
     <ProjectReference Include="..\Storygame.Library\Storygame.Library.csproj" />
     <ProjectReference Include="..\Storygame.Logging\Storygame.Logging.csproj" />
