@@ -8,8 +8,6 @@ namespace Storygame.Web.Areas.Users;
 
 public static class UsersEndpoints
 {
-    private static Guid currentUser = new Guid("56f95c72-24a4-48d5-88fc-d715288c51d5");
-
     public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/users").WithTags("Users").RequireAuthorization();
@@ -27,7 +25,7 @@ public static class UsersEndpoints
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, currentUser.ToString()),
+            new(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
