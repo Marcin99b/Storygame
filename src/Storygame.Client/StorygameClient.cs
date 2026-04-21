@@ -22,69 +22,47 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         Timeout = customTimeout ?? TimeSpan.FromSeconds(10),
     };
 
-    public async Task Login()
+    public Task Login() 
+        => Post(UsersPath + "/Login");
+
+    public Task<MeResponse> Me() 
+        => Get<MeResponse>(UsersPath + "/Me");
+
+    public Task<GetCatalogResponse> GetCatalog() 
+        => Get<GetCatalogResponse>(CatalogPath);
+
+    public Task AddToLibrary(AddToLibraryRequest request) 
+        => Post(LibraryPath, request);
+
+    public Task<GetLibraryResponse> GetLibrary() 
+        => Get<GetLibraryResponse>(LibraryPath);
+
+    public Task StartTracking(StartTrackingRequest request) 
+        => Post(TrackingPath, request);
+
+    public Task<GetTrackingsResponse> GetTrackings() 
+        => Get<GetTrackingsResponse>(TrackingPath);
+
+    public Task UpdateIndex(Guid trackingId, UpdateIndexRequest request) 
+        => Post(TrackingPath + $"/{trackingId}/index", request);
+
+    private async Task<TResponse> Get<TResponse>(string url)
     {
-        var url = UsersPath + "/Login";
+        var response = await client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+        TryUpdateCookie(response);
+        return (await response.Content.ReadFromJsonAsync<TResponse>(jsonOptions))!;
+    }
+
+    private async Task Post(string url)
+    {
         var response = await client.PostAsync(url, null);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
     }
 
-    public async Task<MeResponse> Me()
+    private async Task Post<TRequest>(string url, TRequest request)
     {
-        var url = UsersPath + "/Me";
-        var response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-        TryUpdateCookie(response);
-        return (await response.Content.ReadFromJsonAsync<MeResponse>(jsonOptions))!;
-    }
-
-    public async Task<GetCatalogResponse> GetCatalog()
-    {
-        var url = CatalogPath;
-        var response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-        TryUpdateCookie(response);
-        return (await response.Content.ReadFromJsonAsync<GetCatalogResponse>(jsonOptions))!;
-    }
-
-    public async Task AddToLibrary(AddToLibraryRequest request)
-    {
-        var url = LibraryPath;
-        var response = await client.PostAsJsonAsync(url, request, jsonOptions);
-        response.EnsureSuccessStatusCode();
-        TryUpdateCookie(response);
-    }
-
-    public async Task<GetLibraryResponse> GetLibrary()
-    {
-        var url = LibraryPath;
-        var response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-        TryUpdateCookie(response);
-        return (await response.Content.ReadFromJsonAsync<GetLibraryResponse>(jsonOptions))!;
-    }
-
-    public async Task StartTracking(StartTrackingRequest request)
-    {
-        var url = TrackingPath;
-        var response = await client.PostAsJsonAsync(url, request, jsonOptions);
-        response.EnsureSuccessStatusCode();
-        TryUpdateCookie(response);
-    }
-
-    public async Task<GetTrackingsResponse> GetTrackings()
-    {
-        var url = TrackingPath;
-        var response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-        TryUpdateCookie(response);
-        return (await response.Content.ReadFromJsonAsync<GetTrackingsResponse>(jsonOptions))!;
-    }
-
-    public async Task UpdateIndex(Guid trackingId, UpdateIndexRequest request)
-    {
-        var url = TrackingPath + $"/{trackingId}/index";
         var response = await client.PostAsJsonAsync(url, request, jsonOptions);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
