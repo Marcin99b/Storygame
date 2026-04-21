@@ -48,16 +48,19 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         return (await response.Content.ReadFromJsonAsync<GetCatalogResponse>())!;
     }
 
-    public async Task AddToLibrary()
+    public async Task AddToLibrary(AddToLibraryRequest request)
     {
         var url = LibraryPath;
-        var response = await client.PostAsync(url, null);
+        var response = await client.PostAsJsonAsync(url, request);
+        response.EnsureSuccessStatusCode();
     }
 
-    public async Task GetLibrary()
+    public async Task<GetLibraryResponse> GetLibrary()
     {
         var url = LibraryPath;
         var response = await client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<GetLibraryResponse>())!;
     }
 
     public async Task StartTracking()
