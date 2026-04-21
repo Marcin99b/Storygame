@@ -1,6 +1,7 @@
 ﻿using Storygame.Catalog.Queries;
 using Storygame.Contracts.WebApi;
 using Storygame.Library.Queries;
+using Storygame.Tracking.Queries;
 
 namespace Storygame.Web.Extencions;
 
@@ -26,6 +27,16 @@ public static class DtoExtensions
                 (MediaTypeDto)x.MediaType, x.Length, x.AddedToLibraryAt, (LengthUnitDto)x.LengthUnit))
                 .ToArray();
             return new GetLibraryResponse(books);
+        }
+    }
+
+    extension(GetUserTrackingsQueryResult result)
+    {
+        public GetTrackingsResponse ToResponse()
+        {
+            var trackings = result.Trackings.Select(x => new TrackingDto(x.Id, x.LibraryBookId, x.UserId, x.TotalLength, x.CurrentIndex, x.IsStarted, x.IsFinished))
+                .ToArray();
+            return new GetTrackingsResponse(trackings);
         }
     }
 }

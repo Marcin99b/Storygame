@@ -70,10 +70,12 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task GetTrackings()
+    public async Task<GetTrackingsResponse> GetTrackings()
     {
         var url = TrackingPath;
         var response = await client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<GetTrackingsResponse>())!;
     }
 
     public async Task UpdateIndex(Guid trackingId, UpdateIndexRequest request)
