@@ -9,7 +9,7 @@ var me = await client.Me();
 var catalog = await client.GetCatalog();
 var book1 = catalog.Books[0];
 
-await client.AddToLibrary(new AddToLibraryRequest(
+await client.AddToLibrary(new (
     book1.Id, 
     book1.ImageId, 
     book1.Title, 
@@ -21,7 +21,7 @@ var library = await client.GetLibrary();
 
 var libraryBook1 = library.Books[0];
 
-await client.StartTracking(new StartTrackingRequest(libraryBook1.Id, libraryBook1.Length));
+await client.StartTracking(new (libraryBook1.Id, libraryBook1.Length));
 
 var trackings = await client.GetTrackings();
 var tracking1 = trackings.Trackings[0];
