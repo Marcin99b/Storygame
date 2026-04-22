@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Storygame.Cqrs\Storygame.Cqrs.csproj" />
-    <ProjectReference Include="..\Storygame.Ownership\Storygame.Ownership.csproj" />
-  </ItemGroup>
-
 </Project>

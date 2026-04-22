@@ -1,4 +1,5 @@
 ﻿using Storygame.Cqrs;
+using Storygame.Ownership;
 using Storygame.Tracking.Events;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ public class UpdateTrackingIndexCommandHandler(ITrackingRepository trackingRepos
     public async Task HandleAsync(UpdateTrackingIndexCommand command)
     {
         var tracking = await trackingRepository.GetTracking(command.TrackingId);
+        tracking.ThrowIfNotOwner(command.TrackingId);
+
         var oldIndex = tracking.CurrentIndex;
         tracking.CurrentIndex = command.NewIndex;
         await trackingRepository.UpdateTracking(tracking);

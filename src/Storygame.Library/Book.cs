@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Storygame.Ownership;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Storygame.Library;
 
-public class Book
+public class Book : IOwnerable
 {
     public required Guid Id { get; set; }
     public required Guid UserId { get; set; }

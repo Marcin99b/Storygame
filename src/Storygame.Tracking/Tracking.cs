@@ -1,6 +1,8 @@
-﻿namespace Storygame.Tracking;
+﻿using Storygame.Ownership;
 
-public class Tracking
+namespace Storygame.Tracking;
+
+public class Tracking : IOwnerable
 {
     public required Guid Id { get; set; }
     public required Guid LibraryBookId { get; set; }
