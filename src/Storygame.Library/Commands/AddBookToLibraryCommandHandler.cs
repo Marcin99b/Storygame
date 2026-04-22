@@ -31,6 +31,6 @@ public class AddBookToLibraryCommandHandler(ILibraryRepository libraryRepository
             AddedToLibraryAt = DateTime.UtcNow
         };
 
-        libraryRepository.AddBook(book);
+        await libraryRepository.AddBook(book);
     }
 }
