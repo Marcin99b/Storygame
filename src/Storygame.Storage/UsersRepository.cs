@@ -21,8 +21,13 @@ public class UsersRepository(IMongoDatabase database) : IUsersRepository
         return (await users.CountDocumentsAsync(x => x.Email == email)) > 0;
     }
 
-    public Task<User> GetUserById(Guid userId)
+    public async Task<User> GetUserById(Guid userId)
     {
-        return users.AsQueryable().FirstOrDefaultAsync(x => x.Id == userId);
+        return await users.AsQueryable().FirstAsync(x => x.Id == userId);
+    }
+
+    public async Task<User> GetUserByEmail(string email)
+    {
+        return await users.AsQueryable().FirstAsync(x => x.Email == email);
     }
 }

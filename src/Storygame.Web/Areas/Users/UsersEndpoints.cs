@@ -5,6 +5,7 @@ using Storygame.Contracts.WebApi;
 using Storygame.Cqrs;
 using Storygame.Users;
 using Storygame.Users.Commands;
+using Storygame.Users.Queries;
 using Storygame.Web.Auth;
 using System.Security.Claims;
 
@@ -33,15 +34,17 @@ public static class UsersEndpoints
         await dispatcher.SendAsync(command);
     }
 
-    public static async Task Login([FromBody] LoginRequest request)
+    public static async Task Login(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromBody] LoginRequest request)
     {
+        var user = (await dispatcher.QueryAsync<GetUserByEmailQuery, GetUserByEmailQueryResult>(new GetUserByEmailQuery(request.Email))).User;
+        var confirmationKey = sessionStorage.CreateSession(user, http);
         //todo send email with confirmation key
     }
 
-    public static async Task ConfirmLogin(HttpContext http, SessionStorage sessionStorage, [FromRoute] string loginConfirmationKey)
+    public static async Task ConfirmLogin(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromRoute] string loginConfirmationKey)
     {
-        User user = null!; //todo get user
-        var sessionKey = sessionStorage.CreateSession(user, http);
+        var sessionKey = sessionStorage.ConfirmSession(loginConfirmationKey, http);
+
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, sessionKey),
