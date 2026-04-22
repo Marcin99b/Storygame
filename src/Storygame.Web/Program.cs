@@ -8,21 +8,19 @@ using Storygame.Web.Areas.Catalog;
 using Storygame.Web.Areas.Library;
 using Storygame.Web.Areas.Tracking;
 using Storygame.Web.Areas.Users;
+using Storygame.Web.Auth;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
+builder.Services.AddMemoryCache(options => 
 {
-    options.AddDefaultPolicy(policy =>
-        policy
-            .SetIsOriginAllowed(_ => true)
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials());
+    options.ExpirationScanFrequency = TimeSpan.FromMinutes(5);
 });
+
+builder.Services.ConfigureCors();
 
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
@@ -44,31 +42,7 @@ builder.Services.RegisterLogging();
 
 builder.Services.AddHealthChecks().AddMongoDb(sp => sp.GetRequiredService<IMongoClient>(), name: "MongoDB");
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.None;
-        options.ExpireTimeSpan = TimeSpan.FromDays(7);
-        options.SlidingExpiration = true;
-
-        options.Events.OnRedirectToLogin = ctx =>
-        {
-            ctx.Response.StatusCode = 401;
-            return Task.CompletedTask;
-        };
-
-        options.Events.OnRedirectToAccessDenied = ctx =>
-        {
-            ctx.Response.StatusCode = 403;
-            return Task.CompletedTask;
-        };
-    });
-
-builder.Services.AddScoped<UserSession>();
-
-builder.Services.AddAuthorization();
+builder.Services.ConfigureAuth();
 
 var app = builder.Build();
 
@@ -112,20 +86,7 @@ app.MapHealthChecks("/hc", new HealthCheckOptions()
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
-
-app.Use((ctx, next) => 
-{
-    if (ctx.User.Identity?.IsAuthenticated == true && Guid.TryParse(ctx.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out var userId))
-    {
-        var session = ctx.RequestServices.GetService<UserSession>();
-        if (session != null)
-        {
-            session.UserId = userId;
-        }
-    }
-
-    return next(ctx);
-});
+app.ConfigureSetSession();
 
 app.UseAuthorization();
 

@@ -4,6 +4,7 @@ using Storygame.Contracts.WebApi;
 using Storygame.Cqrs;
 using Storygame.Library.Commands;
 using Storygame.Library.Queries;
+using Storygame.Web.Auth;
 using Storygame.Web.Extencions;
 
 namespace Storygame.Web.Areas.Library;
@@ -12,7 +13,7 @@ public static class LibraryEndpoints
 {
     public static IEndpointRouteBuilder MapLibraryEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/library").WithTags("Library").RequireAuthorization();
+        var group = app.MapGroup("/api/library").WithTags("Library").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy);
 
         group.MapGet("/", GetLibrary);
         group.MapPost("/", AddToLibrary);

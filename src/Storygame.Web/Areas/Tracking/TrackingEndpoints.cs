@@ -5,6 +5,7 @@ using Storygame.Library.Queries;
 using Storygame.Ownership;
 using Storygame.Tracking.Commands;
 using Storygame.Tracking.Queries;
+using Storygame.Web.Auth;
 using Storygame.Web.Extencions;
 
 namespace Storygame.Web.Areas.Tracking;
@@ -13,7 +14,7 @@ public static class TrackingEndpoints
 {
     public static IEndpointRouteBuilder MapTrackingEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/tracking").WithTags("Tracking").RequireAuthorization();
+        var group = app.MapGroup("/api/tracking").WithTags("Tracking").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy);
 
         group.MapGet("/", GetTrackings);
         group.MapPost("/", StartTracking);

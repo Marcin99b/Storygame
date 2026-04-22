@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Storygame.Contracts.WebApi;
 using Storygame.Users;
+using Storygame.Web.Auth;
 using System.Security.Claims;
 
 namespace Storygame.Web.Areas.Users;
@@ -10,7 +11,7 @@ public static class UsersEndpoints
 {
     public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/users").WithTags("Users").RequireAuthorization();
+        var group = app.MapGroup("/api/users").WithTags("Users").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy);
 
         group.MapGet("/Me", GetMe);
         group.MapPost("/Login", Login).AllowAnonymous();
