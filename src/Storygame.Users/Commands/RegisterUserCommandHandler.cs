@@ -8,7 +8,7 @@ namespace Storygame.Users.Commands;
 
 public record RegisterUserCommand(string Name, string Email) : ICommand;
 
-internal class RegisterUserCommandHandler(IUsersRepository usersRepository, IDispatcher dispatcher) : ICommandHandler<RegisterUserCommand>
+public class RegisterUserCommandHandler(IUsersRepository usersRepository, IDispatcher dispatcher) : ICommandHandler<RegisterUserCommand>
 {
     public async Task HandleAsync(RegisterUserCommand command)
     {

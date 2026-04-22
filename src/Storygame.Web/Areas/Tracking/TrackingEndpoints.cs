@@ -7,7 +7,6 @@ using Storygame.Tracking.Commands;
 using Storygame.Tracking.Queries;
 using Storygame.Web.Auth;
 using Storygame.Web.Extencions;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Storygame.Web.Areas.Tracking;
 

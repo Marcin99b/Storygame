@@ -13,6 +13,7 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
     private const string LibraryPath = "/api/library";
     private const string TrackingPath = "/api/tracking";
     private const string UsersPath = "/api/users";
+    private const string MailPath = "/api/mail";
 
     private static readonly JsonSerializerOptions jsonOptions = CreateJsonOptions();
 
@@ -22,8 +23,17 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         Timeout = customTimeout ?? TimeSpan.FromSeconds(10),
     };
 
-    public Task Login() 
-        => Post(UsersPath + "/Login");
+    public Task Login(LoginRequest request) 
+        => Post(UsersPath + "/Login", request);
+
+    public Task ConfirmLogin(ConfirmLoginRequest request)
+        => Post(UsersPath + "/ConfirmLogin", request);
+
+    public Task Register(RegisterRequest request)
+        => Post(UsersPath + "/Register", request);
+
+    public Task<MailMessage[]> Mail(string email)
+        => Get<MailMessage[]>($"/{email}");
 
     public Task<MeResponse> Me() 
         => Get<MeResponse>(UsersPath + "/Me");

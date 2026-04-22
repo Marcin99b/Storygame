@@ -20,7 +20,7 @@ public static class Scenarios
     public static async Task SimpleScenario(Uri url)
     {
         var client = new StorygameClient(url);
-        await client.Login();
+        await CreateUserAndLogin(client);
         await RandomDelay(1, 3);
 
         var me = await client.Me();
@@ -71,7 +71,7 @@ public static class Scenarios
     public static async Task BrowsingAndAddScenario(Uri url)
     {
         var client = new StorygameClient(url);
-        await client.Login();
+        await CreateUserAndLogin(client);
         await RandomDelay(1, 4);
 
         var catalog = await client.GetCatalog();
@@ -100,7 +100,7 @@ public static class Scenarios
     public static async Task AudiobookListeningScenario(Uri url)
     {
         var client = new StorygameClient(url);
-        await client.Login();
+        await CreateUserAndLogin(client);
         await RandomDelay(1, 3);
 
         var catalog = await client.GetCatalog();
@@ -143,7 +143,7 @@ public static class Scenarios
     public static async Task BingeReaderScenario(Uri url)
     {
         var client = new StorygameClient(url);
-        await client.Login();
+        await CreateUserAndLogin(client);
         await RandomDelay(1, 2);
 
         var catalog = await client.GetCatalog();
@@ -183,7 +183,7 @@ public static class Scenarios
     public static async Task CasualSamplerScenario(Uri url)
     {
         var client = new StorygameClient(url);
-        await client.Login();
+        await CreateUserAndLogin(client);
         await RandomDelay(1, 3);
 
         var catalog = await client.GetCatalog();
@@ -224,7 +224,7 @@ public static class Scenarios
     public static async Task AbandonScenario(Uri url)
     {
         var client = new StorygameClient(url);
-        await client.Login();
+        await CreateUserAndLogin(client);
         await RandomDelay(1, 3);
 
         var catalog = await client.GetCatalog();
@@ -241,5 +241,16 @@ public static class Scenarios
         if (libBook is null) return;
 
         await client.StartTracking(new(libBook.Id));
+    }
+
+    public static async Task CreateUserAndLogin(StorygameClient client)
+    {
+        var name = "username_" + Guid.NewGuid().ToString();
+        var email = "email_" + Guid.NewGuid() + "@example.com";
+        await client.Register(new RegisterRequest(name, email));
+        var mails = await client.Mail(email);
+        var latestMail = mails.OrderByDescending(x => x.SentAt).First();
+        var verificationKey = latestMail.Message;
+
     }
 }

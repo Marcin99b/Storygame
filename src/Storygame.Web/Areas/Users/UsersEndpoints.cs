@@ -11,8 +11,6 @@ using System.Security.Claims;
 
 namespace Storygame.Web.Areas.Users;
 
-public record ConfirmLoginRequest(string LoginConfirmationKey);
-
 public static class UsersEndpoints
 {
     public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
@@ -34,6 +32,11 @@ public static class UsersEndpoints
     {
         var command = new RegisterUserCommand(request.Name, request.Email);
         await dispatcher.SendAsync(command);
+    }
+
+    public static async Task Verify(IDispatcher dispatcher, [FromBody] VerifyUserRequest request)
+    {
+        //todo
     }
 
     public static async Task Login(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromBody] LoginRequest request)
