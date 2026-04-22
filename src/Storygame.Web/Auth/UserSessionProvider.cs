@@ -14,4 +14,14 @@ public class UserSessionProvider(SessionStorage sessionStorage)
         var session = sessionStorage.GetSession(SessionKey, context);
         return session;
     }
+
+    public void Logout()
+    {
+        if (SessionKey == null)
+        {
+            throw new ArgumentException("Session key is not set");
+        }
+
+        sessionStorage.Logout(SessionKey);
+    }
 }

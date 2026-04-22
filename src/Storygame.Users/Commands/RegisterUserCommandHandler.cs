@@ -28,5 +28,6 @@ internal class RegisterUserCommandHandler(IUsersRepository usersRepository, IDis
 
         await usersRepository.AddUser(user);
         await dispatcher.PublishAsync(new UserRegisteredEvent(user.Id, user.Name, user.Email, user.RegisteredAt));
+        //todo event handler should send email with verification link
     }
 }

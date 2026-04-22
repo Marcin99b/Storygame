@@ -56,5 +56,9 @@ public static class UsersEndpoints
         await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
     }
 
-    public static Task Logout(HttpContext http) => http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    public static Task Logout(HttpContext http, UserSessionProvider sessionProvider)
+    {
+        sessionProvider.Logout();
+        return http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    }
 }

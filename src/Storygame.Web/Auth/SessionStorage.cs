@@ -81,4 +81,27 @@ public class SessionStorage
 
         throw new ArgumentException($"Cannot get session for key {key}");
     }
+
+    public void Logout(string key)
+    {
+        if (activeSessions.ContainsKey(key) == false)
+        {
+            return;
+        }
+
+        if (activeSessions.Remove(key, out var session))
+        {
+            //change flag in memory
+            //block flows executed at now
+            session.LoggedOut = true;
+        }
+        else if (activeSessions.TryGetValue(key, out var sessionGetValue))
+        {
+            sessionGetValue.LoggedOut = true;
+        }
+        else
+        {
+            throw new ArgumentException($"Cannot logout session {key}");
+        }
+    }
 }
