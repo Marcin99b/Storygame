@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Storygame.Storage;
 
-//todo async Add() and use cancellation tokens
+//todo use cancellation tokens
 public class LibraryRepository(IMongoDatabase database) : ILibraryRepository
 {
     private readonly IMongoCollection<Book> books = database.GetCollection<Book>(DbCollectionNames.LIBRARY_BOOKS);

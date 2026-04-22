@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Storygame.Library;
 using Storygame.Tracking;
+using Storygame.Users;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -44,6 +45,7 @@ public static class StorageModule
         services.AddSingleton<IMongoDatabase>(database);
         services.AddSingleton<ILibraryRepository, LibraryRepository>();
         services.AddSingleton<ITrackingRepository, TrackingRepository>();
+        services.AddSingleton<IUsersRepository, UsersRepository>();
     }
 
     public static void Initialize()

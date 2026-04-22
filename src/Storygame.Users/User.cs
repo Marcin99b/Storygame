@@ -14,3 +14,10 @@ public class User
     public required DateTime? VerifiedAt { get; set; }
     public bool IsVerified => VerifiedAt.GetValueOrDefault() > MIN_VERIFICATION_DATE_TIME;
 }
+
+public interface IUsersRepository
+{
+    Task AddUser(User user);
+    Task<User> GetUserById(Guid userId);
+    Task<bool> CheckIfEmailExist(string email);
+}

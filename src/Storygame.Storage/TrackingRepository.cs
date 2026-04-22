@@ -6,7 +6,7 @@ namespace Storygame.Storage;
 
 public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
 {
-    private readonly IMongoCollection<Tracking.Tracking> trackings = database.GetCollection<Tracking.Tracking>(DbCollectionNames.Tracking);
+    private readonly IMongoCollection<Tracking.Tracking> trackings = database.GetCollection<Tracking.Tracking>(DbCollectionNames.TRACKING);
 
     public Task AddTracking(Tracking.Tracking tracking) => trackings.InsertOneAsync(tracking);
 
