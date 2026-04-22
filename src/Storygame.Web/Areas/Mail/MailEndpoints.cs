@@ -14,7 +14,7 @@ public static class MailEndpoints
     /// </summary>
     public static IEndpointRouteBuilder MapMailEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/mail").WithTags("Mail").AllowAnonymous();
+        var group = app.MapGroup("/api/mail").WithTags("Mail").AllowAnonymous().RequireRateLimiting("MainRateLimiter");
 
         group.MapGet("/{email}", ReadMail);
 

@@ -11,7 +11,7 @@ public static class CatalogEndpoints
 {
     public static IEndpointRouteBuilder MapCatalogEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/catalog").WithTags("Catalog").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy);
+        var group = app.MapGroup("/api/catalog").WithTags("Catalog").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy).RequireRateLimiting("MainRateLimiter");
 
         group.MapGet("/", GetCatalog);
 

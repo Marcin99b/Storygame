@@ -14,6 +14,7 @@ using Storygame.Web.Auth;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,12 +49,29 @@ builder.Services.AddHealthChecks().AddMongoDb(sp => sp.GetRequiredService<IMongo
 
 builder.Services.ConfigureAuth();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = 429; 
+
+    options.AddPolicy("MainRateLimiter", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+});
+
 var app = builder.Build();
 
 StorageModule.Initialize();
 
 app.UseCors();
 
+app.UseRateLimiter();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
