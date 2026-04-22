@@ -38,6 +38,6 @@ public static class TrackingEndpoints
 
     public static Task UpdateIndex(IDispatcher dispatcher, UserSession userSession, [FromRoute] Guid trackingId, [FromBody] UpdateIndexRequest request)
     {
-        return dispatcher.SendAsync(new UpdateTrackingIndexCommand(trackingId, request.NewIndex));
+        return dispatcher.SendAsync(new UpdateTrackingIndexCommand(userSession.UserId!.Value, trackingId, request.NewIndex));
     }
 }
