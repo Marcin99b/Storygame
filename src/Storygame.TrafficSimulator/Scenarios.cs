@@ -51,7 +51,7 @@ public static class Scenarios
         if (libraryBook1 is null)
             return;
 
-        await client.StartTracking(new(libraryBook1.Id, libraryBook1.Length));
+        await client.StartTracking(new(libraryBook1.Id));
 
         // A few periodic updates representing listening/reading sessions
         for (var i = 0; i < 5; i++)
@@ -117,7 +117,7 @@ public static class Scenarios
         var libBook = library.Books.FirstOrDefault(b => b.CatalogBookId == chosen.Id) ?? library.Books.FirstOrDefault(b => b.MediaType == MediaTypeDto.Audiobook);
         if (libBook is null) return;
 
-        await client.StartTracking(new(libBook.Id, libBook.Length));
+        await client.StartTracking(new(libBook.Id));
 
         // Simulate daily listening sessions for several days (1..5 sessions)
         var sessions = Rng.Next(1, 6);
@@ -159,7 +159,7 @@ public static class Scenarios
         var libBook = library.Books.FirstOrDefault(b => b.CatalogBookId == chosen.Id) ?? library.Books.FirstOrDefault(b => b.MediaType != MediaTypeDto.Audiobook);
         if (libBook is null) return;
 
-        await client.StartTracking(new(libBook.Id, libBook.Length));
+        await client.StartTracking(new(libBook.Id));
 
         // Rapid reading: several fast updates
         var updates = Rng.Next(3, 10);
@@ -206,7 +206,7 @@ public static class Scenarios
                 var libBook = library.Books.FirstOrDefault(b => b.CatalogBookId == book.Id);
                 if (libBook != null)
                 {
-                    await client.StartTracking(new(libBook.Id, libBook.Length));
+                    await client.StartTracking(new(libBook.Id));
                     await RandomDelay(10, 120);
                     var trackings = await client.GetTrackings();
                     var tracking = trackings.Trackings.FirstOrDefault(t => t.LibraryBookId == libBook.Id);
@@ -240,6 +240,6 @@ public static class Scenarios
         var libBook = library.Books.FirstOrDefault(b => b.CatalogBookId == chosen.Id);
         if (libBook is null) return;
 
-        await client.StartTracking(new(libBook.Id, libBook.Length));
+        await client.StartTracking(new(libBook.Id));
     }
 }

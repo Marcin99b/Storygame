@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Storygame.Contracts.WebApi;
 using Storygame.Cqrs;
+using Storygame.Library.Queries;
+using Storygame.Ownership;
 using Storygame.Tracking.Commands;
 using Storygame.Tracking.Queries;
 using Storygame.Web.Extencions;
@@ -26,9 +28,11 @@ public static class TrackingEndpoints
         return result.ToResponse();
     }
 
-    public static Task StartTracking(IDispatcher dispatcher, UserSession userSession, [FromBody] StartTrackingRequest request)
+    public static async Task StartTracking(IDispatcher dispatcher, UserSession userSession, [FromBody] StartTrackingRequest request)
     {
-        return dispatcher.SendAsync(new StartTrackingBookCommand(request.LibraryBookId, userSession.UserId!.Value, request.TotalLength));
+        var book = (await dispatcher.QueryAsync<GetLibraryBookByIdQuery, GetLibraryBookByIdQueryResult>(new GetLibraryBookByIdQuery(request.LibraryBookId))).Book;
+        book.ThrowIfNotOwner(userSession.UserId!.Value);
+        await dispatcher.SendAsync(new StartTrackingBookCommand(request.LibraryBookId, userSession.UserId!.Value, book.Length));
     }
 
     public static Task UpdateIndex(IDispatcher dispatcher, UserSession userSession, [FromRoute] Guid trackingId, [FromBody] UpdateIndexRequest request)

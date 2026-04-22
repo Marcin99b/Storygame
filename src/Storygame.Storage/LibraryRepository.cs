@@ -12,13 +12,16 @@ public class LibraryRepository(IMongoDatabase database) : ILibraryRepository
 {
     private readonly IMongoCollection<Book> books = database.GetCollection<Book>(DbCollectionNames.LIBRARY_BOOKS);
 
-    public void AddBook(Book book)
+    public async Task AddBook(Book book)
     {
-        books.InsertOne(book);
+        await books.InsertOneAsync(book);
     }
 
     public async Task<bool> CheckIfUserAlreadyHasThisBook(Guid userId, Guid catalogBookId, MediaType mediaType)
         => await books.CountDocumentsAsync(x => x.UserId == userId && x.CatalogBookId == catalogBookId && x.MediaType == mediaType) > 0;
+
+    public async Task<Book> GetBookById(Guid bookId) 
+        => await books.AsQueryable().FirstAsync(x => x.Id == bookId);
 
     public async Task<IEnumerable<Book>> GetUserBooks(Guid userId) 
         => await books.AsQueryable().Where(x => x.UserId == userId).ToListAsync();
