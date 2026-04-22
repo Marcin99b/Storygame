@@ -6,7 +6,7 @@ using System.Text;
 namespace Storygame.Users.Queries;
 
 public record GetUserByIdQuery(Guid UserId) : IQuery<GetUserByIdQueryResult>;
-public record GetUserByIdQueryResult(User user);
+public record GetUserByIdQueryResult(User User);
 
 public class GetUserByIdQueryHandler(IUsersRepository usersRepository) : IQueryHandler<GetUserByIdQuery, GetUserByIdQueryResult>
 {

@@ -1,3 +1,3 @@
 ﻿namespace Storygame.Contracts.WebApi;
 
-public record MeResponse(string Name, bool IsVerified);
+public record MeResponse(string Name);

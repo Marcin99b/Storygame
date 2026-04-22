@@ -28,7 +28,13 @@ public static class UsersEndpoints
         return app;
     }
 
-    public static Task<MeResponse> GetMe() => Task.FromResult(new MeResponse("TestUser", true));
+    public static async Task<MeResponse> GetMe(IDispatcher dispatcher, HttpContext http, UserSessionProvider sessionProvider)
+    {
+        var session = sessionProvider.GetSession(http);
+        var user = (await dispatcher.QueryAsync<GetUserByIdQuery, GetUserByIdQueryResult>(new GetUserByIdQuery(session.UserId))).User;
+
+        return new MeResponse(user.Name);
+    }
 
     public static async Task Register(IDispatcher dispatcher, [FromBody] RegisterRequest request)
     {

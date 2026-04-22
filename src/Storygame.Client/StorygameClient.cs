@@ -37,7 +37,7 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
         => Post(UsersPath + "/Verify", request);
 
     public Task<MailMessage[]> Mail(string email)
-        => Get<MailMessage[]>($"/{email}");
+        => Get<MailMessage[]>(MailPath + $"/{email}");
 
     public Task<MeResponse> Me() 
         => Get<MeResponse>(UsersPath + "/Me");

@@ -7,6 +7,7 @@ using Storygame.Logging;
 using Storygame.Storage;
 using Storygame.Web.Areas.Catalog;
 using Storygame.Web.Areas.Library;
+using Storygame.Web.Areas.Mail;
 using Storygame.Web.Areas.Tracking;
 using Storygame.Web.Areas.Users;
 using Storygame.Web.Auth;
@@ -99,7 +100,8 @@ app
     .MapCatalogEndpoints()
     .MapLibraryEndpoints()
     .MapTrackingEndpoints()
-    .MapUsersEndpoints();
+    .MapUsersEndpoints()
+    .MapMailEndpoints();
 
 app.MapControllers();
 
