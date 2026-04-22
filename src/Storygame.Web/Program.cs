@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using MongoDB.Driver;
 using Storygame.Cqrs;
+using Storygame.Integrations.Email;
 using Storygame.Logging;
 using Storygame.Storage;
 using Storygame.Web.Areas.Catalog;
@@ -14,6 +15,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<EmailClient>();
 
 builder.Services.AddMemoryCache(options => 
 {

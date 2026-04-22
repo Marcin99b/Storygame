@@ -1,4 +1,5 @@
 ﻿using Storygame.Cqrs;
+using Storygame.Integrations.Email;
 using Storygame.Users.Events;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace Storygame.Users.Commands;
 
 public record RegisterUserCommand(string Name, string Email) : ICommand;
 
-public class RegisterUserCommandHandler(IUsersRepository usersRepository, IDispatcher dispatcher) : ICommandHandler<RegisterUserCommand>
+public class RegisterUserCommandHandler(IUsersRepository usersRepository, EmailClient emailClient, IDispatcher dispatcher) : ICommandHandler<RegisterUserCommand>
 {
     public async Task HandleAsync(RegisterUserCommand command)
     {
@@ -34,7 +35,6 @@ public class RegisterUserCommandHandler(IUsersRepository usersRepository, IDispa
         await usersRepository.SaveUserVerificationCode(verificationCode);
 
         await dispatcher.PublishAsync(new UserRegisteredEvent(user.Id, user.Name, user.Email, user.RegisteredAt));
-        //todo event handler should send email with verification link
-
+        await emailClient.Send(new MailMessage(user.Email, "Verification code", code, DateTime.UtcNow));
     }
 }

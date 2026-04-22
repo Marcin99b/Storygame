@@ -8,6 +8,9 @@
   <Folder Name="/Contracts/">
     <Project Path="Storygame.Contracts.WebApi/Storygame.Contracts.WebApi.csproj" Id="ed4ee1c5-b302-46da-86da-ff49ed36ad85" />
   </Folder>
+  <Folder Name="/Integrations/">
+    <Project Path="Storygame.Integrations.Email/Storygame.Integrations.Email.csproj" Id="2d834aa7-701e-45bb-80ce-9d0bf5d7393d" />
+  </Folder>
   <Folder Name="/Simulation/">
     <Project Path="Storygame.TrafficSimulator/Storygame.TrafficSimulator.csproj" Id="26609c1a-921f-47a4-97f3-7c18ffe31b9d" />
   </Folder>

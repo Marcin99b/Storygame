@@ -7,12 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Net.Http.Headers" Version="10.0.7" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Storygame.Contracts.WebApi\Storygame.Contracts.WebApi.csproj" />
-    <ProjectReference Include="..\Storygame.Integrations.Email\Storygame.Integrations.Email.csproj" />
   </ItemGroup>
 
 </Project>

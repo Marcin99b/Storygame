@@ -1,5 +1,6 @@
 ﻿using Microsoft.Net.Http.Headers;
 using Storygame.Contracts.WebApi;
+using Storygame.Integrations.Email;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -31,6 +32,9 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
 
     public Task Register(RegisterRequest request)
         => Post(UsersPath + "/Register", request);
+
+    public Task Verify(VerifyUserRequest request)
+        => Post(UsersPath + "/Verify", request);
 
     public Task<MailMessage[]> Mail(string email)
         => Get<MailMessage[]>($"/{email}");

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Storygame.Contracts.WebApi;
+using Storygame.Integrations.Email;
 
 namespace Storygame.Web.Areas.Mail;
 
@@ -20,10 +21,8 @@ public static class MailEndpoints
         return app;
     }
 
-    public static async Task<MailMessage[]> ReadMail([FromRoute] string email)
+    public static async Task<MailMessage[]> ReadMail(EmailClient emailClient, [FromRoute] string email)
     {
-        var messages = new List<MailMessage>() { new MailMessage("test", "abc", DateTime.UtcNow) };
-
-        return messages.ToArray();
+        return await emailClient.Read(email);
     }
 }

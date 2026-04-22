@@ -248,9 +248,19 @@ public static class Scenarios
         var name = "username_" + Guid.NewGuid().ToString();
         var email = "email_" + Guid.NewGuid() + "@example.com";
         await client.Register(new RegisterRequest(name, email));
+
         var mails = await client.Mail(email);
         var latestMail = mails.OrderByDescending(x => x.SentAt).First();
-        var verificationKey = latestMail.Message;
+        var verificationCode = latestMail.Message;
 
+        await client.Verify(new VerifyUserRequest(email, verificationCode));
+
+        await client.Login(new LoginRequest(email));
+
+        mails = await client.Mail(email);
+        latestMail = mails.OrderByDescending(x => x.SentAt).First();
+
+        var confirmation = latestMail.Message;
+        await client.ConfirmLogin(new ConfirmLoginRequest(confirmation));
     }
 }

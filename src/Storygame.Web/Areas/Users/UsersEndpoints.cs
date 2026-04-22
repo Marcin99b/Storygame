@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Storygame.Contracts.WebApi;
 using Storygame.Cqrs;
+using Storygame.Integrations.Email;
 using Storygame.Users;
 using Storygame.Users.Commands;
 using Storygame.Users.Queries;
@@ -41,7 +42,7 @@ public static class UsersEndpoints
         await dispatcher.SendAsync(command);
     }
 
-    public static async Task Login(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromBody] LoginRequest request)
+    public static async Task Login(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, EmailClient emailClient, [FromBody] LoginRequest request)
     {
         var user = (await dispatcher.QueryAsync<GetUserByEmailQuery, GetUserByEmailQueryResult>(new GetUserByEmailQuery(request.Email))).User;
         if (!user.IsVerified)
@@ -50,7 +51,7 @@ public static class UsersEndpoints
         }
 
         var confirmationKey = sessionStorage.CreateSession(user, http);
-        //todo send email with confirmation key
+        await emailClient.Send(new MailMessage(user.Email, "Login confirmation", confirmationKey, DateTime.UtcNow));
     }
 
     public static async Task ConfirmLogin(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromBody] ConfirmLoginRequest request)
