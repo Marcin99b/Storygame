@@ -16,7 +16,7 @@ public static class UsersEndpoints
 {
     public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/users").WithTags("Users").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy).RequireRateLimiting("MainRateLimiter");
+        var group = app.MapGroup("/api/users").WithTags("Users").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy).RequireRateLimiting("AuthRateLimiter");
 
         group.MapGet("/Me", GetMe);
         group.MapPost("/Register", Register).AllowAnonymous();
