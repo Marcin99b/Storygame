@@ -2,6 +2,7 @@
 using Storygame.Users.Events;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Storygame.Users.Commands;
@@ -27,7 +28,13 @@ public class RegisterUserCommandHandler(IUsersRepository usersRepository, IDispa
         };
 
         await usersRepository.AddUser(user);
+
+        var code = RandomNumberGenerator.GetHexString(6, lowercase: true);
+        var verificationCode = new UserVerificationCode(Guid.NewGuid(), user.Id, code);
+        await usersRepository.SaveUserVerificationCode(verificationCode);
+
         await dispatcher.PublishAsync(new UserRegisteredEvent(user.Id, user.Name, user.Email, user.RegisteredAt));
         //todo event handler should send email with verification link
+
     }
 }

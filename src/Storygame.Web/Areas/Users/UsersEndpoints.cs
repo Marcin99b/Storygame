@@ -19,6 +19,7 @@ public static class UsersEndpoints
 
         group.MapGet("/Me", GetMe);
         group.MapPost("/Register", Register).AllowAnonymous();
+        group.MapPost("/Verify", Verify).AllowAnonymous();
         group.MapPost("/Login", Login).AllowAnonymous();
         group.MapPost("/ConfirmLogin", ConfirmLogin).AllowAnonymous();
         group.MapPost("/Logout", Logout);
@@ -36,12 +37,18 @@ public static class UsersEndpoints
 
     public static async Task Verify(IDispatcher dispatcher, [FromBody] VerifyUserRequest request)
     {
-        //todo
+        var command = new VerifyUserCommand(request.Email, request.VerificationCode);
+        await dispatcher.SendAsync(command);
     }
 
     public static async Task Login(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromBody] LoginRequest request)
     {
         var user = (await dispatcher.QueryAsync<GetUserByEmailQuery, GetUserByEmailQueryResult>(new GetUserByEmailQuery(request.Email))).User;
+        if (!user.IsVerified)
+        {
+            throw new ArgumentException($"User {user.Id} is not verified");
+        }
+
         var confirmationKey = sessionStorage.CreateSession(user, http);
         //todo send email with confirmation key
     }

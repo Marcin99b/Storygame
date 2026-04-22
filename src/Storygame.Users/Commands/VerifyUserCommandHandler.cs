@@ -16,5 +16,15 @@ public class VerifyUserCommandHandler(IUsersRepository usersRepository) : IComma
         {
             throw new ArgumentException($"User with email {command.Email} is already verified");
         }
+
+        var verificationCode = await usersRepository.GetUserVerificationCode(user.Id);
+
+        if (command.VerificationCode != verificationCode.Code)
+        {
+            throw new ArgumentException($"Verification code for user {user.Id} is wrong");
+        }
+
+        user.VerifiedAt = DateTime.UtcNow;
+        await usersRepository.UpdateUser(user);
     }
 }
