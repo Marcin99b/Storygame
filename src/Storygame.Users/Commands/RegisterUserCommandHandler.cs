@@ -1,4 +1,5 @@
 ﻿using Storygame.Cqrs;
+using Storygame.Users.Events;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ namespace Storygame.Users.Commands;
 
 public record RegisterUserCommand(string Name, string Email) : ICommand;
 
-internal class RegisterUserCommandHandler(IUsersRepository usersRepository) : ICommandHandler<RegisterUserCommand>
+internal class RegisterUserCommandHandler(IUsersRepository usersRepository, IDispatcher dispatcher) : ICommandHandler<RegisterUserCommand>
 {
     public async Task HandleAsync(RegisterUserCommand command)
     {
@@ -26,5 +27,6 @@ internal class RegisterUserCommandHandler(IUsersRepository usersRepository) : IC
         };
 
         await usersRepository.AddUser(user);
+        await dispatcher.PublishAsync(new UserRegisteredEvent(user.Id, user.Name, user.Email, user.RegisteredAt));
     }
 }

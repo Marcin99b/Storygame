@@ -43,7 +43,8 @@ public static class AuthExtensions
             };
         });
 
-        services.AddScoped<UserSession>();
+        services.AddSingleton<SessionStorage>();
+        services.AddScoped<UserSessionProvider>();
 
         services.AddAuthorization(options => 
         {
@@ -57,13 +58,22 @@ public static class AuthExtensions
                         return false;
                     }
 
-                    var session = httpContext.RequestServices.GetRequiredService<UserSession>();
-                    if (!session.UserId.HasValue)
+                    var sessionProvider = httpContext.RequestServices.GetRequiredService<UserSessionProvider>();
+                    if (string.IsNullOrWhiteSpace(sessionProvider.SessionKey))
                     {
                         return false;
                     }
 
-                    return true;
+                    try
+                    {
+                        var session = sessionProvider.GetSession(httpContext);
+                        return session.IsUserVerified && !session.LoggedOut;
+                    }
+                    catch
+                    {
+                        //todo log exception
+                        return false;
+                    }
                 });
             });
         });
@@ -73,12 +83,14 @@ public static class AuthExtensions
     {
         app.Use((ctx, next) =>
         {
-            if (ctx.User.Identity?.IsAuthenticated == true && Guid.TryParse(ctx.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out var userId))
+            if (ctx.User.Identity?.IsAuthenticated == true)
             {
-                var session = ctx.RequestServices.GetService<UserSession>();
-                if (session != null)
+                var sessionKey = ctx.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                var sessionProvider = ctx.RequestServices.GetService<UserSessionProvider>();
+                if (sessionProvider != null)
                 {
-                    session.UserId = userId;
+                    sessionProvider.SessionKey = sessionKey;
                 }
             }
 

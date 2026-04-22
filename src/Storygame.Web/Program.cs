@@ -99,9 +99,3 @@ app
 app.MapControllers();
 
 app.Run();
-
-
-public class UserSession
-{
-    public Guid? UserId { get; set; }
-}
