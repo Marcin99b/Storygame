@@ -241,7 +241,5 @@ public static class Scenarios
         if (libBook is null) return;
 
         await client.StartTracking(new(libBook.Id, libBook.Length));
-        // long pause meaning the user doesn't come back: 1..7 days
-        await Task.Delay(TimeSpan.FromDays(Rng.Next(1, 8)));
     }
 }
