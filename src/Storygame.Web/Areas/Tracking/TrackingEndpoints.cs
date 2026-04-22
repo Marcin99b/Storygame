@@ -21,10 +21,18 @@ public static class TrackingEndpoints
     }
 
     public static async Task<GetTrackingsResponse> GetTrackings(IDispatcher dispatcher, UserSession userSession)
-        => (await dispatcher.QueryAsync<GetUserTrackingsQuery, GetUserTrackingsQueryResult>(new GetUserTrackingsQuery(userSession.UserId!.Value))).ToResponse();
+    {
+        var result = await dispatcher.QueryAsync<GetUserTrackingsQuery, GetUserTrackingsQueryResult>(new GetUserTrackingsQuery(userSession.UserId!.Value));
+        return result.ToResponse();
+    }
+
     public static Task StartTracking(IDispatcher dispatcher, UserSession userSession, [FromBody] StartTrackingRequest request)
-        => dispatcher.SendAsync(new StartTrackingBookCommand(request.LibraryBookId, userSession.UserId!.Value, request.TotalLength));
+    {
+        return dispatcher.SendAsync(new StartTrackingBookCommand(request.LibraryBookId, userSession.UserId!.Value, request.TotalLength));
+    }
 
     public static Task UpdateIndex(IDispatcher dispatcher, UserSession userSession, [FromRoute] Guid trackingId, [FromBody] UpdateIndexRequest request)
-        => dispatcher.SendAsync(new UpdateTrackingIndexCommand(trackingId, request.NewIndex));
+    {
+        return dispatcher.SendAsync(new UpdateTrackingIndexCommand(trackingId, request.NewIndex));
+    }
 }

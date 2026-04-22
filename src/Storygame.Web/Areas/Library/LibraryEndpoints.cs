@@ -20,9 +20,14 @@ public static class LibraryEndpoints
         return app;
     }
 
-    public static async Task<GetLibraryResponse> GetLibrary(IDispatcher dispatcher, UserSession userSession) 
-        => (await dispatcher.QueryAsync<GetUserBooksFromLibraryQuery, GetUserBooksFromLibraryQueryResult>(new GetUserBooksFromLibraryQuery(userSession.UserId!.Value))).ToResponse();
+    public static async Task<GetLibraryResponse> GetLibrary(IDispatcher dispatcher, UserSession userSession)
+    {
+        var result = await dispatcher.QueryAsync<GetUserBooksFromLibraryQuery, GetUserBooksFromLibraryQueryResult>(new GetUserBooksFromLibraryQuery(userSession.UserId!.Value));
+        return result.ToResponse();
+    }
 
     public static Task AddToLibrary(IDispatcher dispatcher, UserSession userSession, [FromBody] AddToLibraryRequest request)
-        => dispatcher.SendAsync(new AddBookToLibraryCommand(userSession.UserId!.Value, request.CatalogBookId, request.ImageId, request.Title, request.Description, (Storygame.Library.MediaType)request.MediaType, request.Length));
+    {
+        return dispatcher.SendAsync(new AddBookToLibraryCommand(userSession.UserId!.Value, request.CatalogBookId, request.ImageId, request.Title, request.Description, (Storygame.Library.MediaType)request.MediaType, request.Length));
+    }
 }

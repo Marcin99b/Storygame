@@ -17,7 +17,10 @@ public static class CatalogEndpoints
         return app;
     }
 
-    public static async Task<GetCatalogResponse> GetCatalog(IDispatcher dispatcher, [FromQuery] string? titleContains, [FromQuery] bool? hasTextEdition, [FromQuery] bool? hasAudiobook) 
-        => (await dispatcher.QueryAsync<SearchCatalogQuery, SearchCatalogQueryResult>(new SearchCatalogQuery(titleContains, hasTextEdition, hasAudiobook))).ToResponse();
+    public static async Task<GetCatalogResponse> GetCatalog(IDispatcher dispatcher, [FromQuery] string? titleContains, [FromQuery] bool? hasTextEdition, [FromQuery] bool? hasAudiobook)
+    {
+        var result = await dispatcher.QueryAsync<SearchCatalogQuery, SearchCatalogQueryResult>(new SearchCatalogQuery(titleContains, hasTextEdition, hasAudiobook));
+        return result.ToResponse();
+    }
 }
 
