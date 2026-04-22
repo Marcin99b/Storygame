@@ -34,5 +34,5 @@ public static class UsersEndpoints
         await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
     }
 
-    public static Task Logout(HttpContext http) => http.SignOutAsync();
+    public static Task Logout(HttpContext http) => http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 }
