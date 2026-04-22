@@ -7,6 +7,7 @@ namespace Storygame.Web.Auth;
 
 public class SessionStorage
 {
+    //todo store sessions in cache database like KeyDB/Redis
     private readonly ConcurrentDictionary<string, UserSession> activeSessions = new ConcurrentDictionary<string, UserSession>();
     //todo scan for long waiting session and delete them
     private readonly ConcurrentDictionary<string, UserSession> notConfirmedSessions = new ConcurrentDictionary<string, UserSession>();
@@ -25,7 +26,6 @@ public class SessionStorage
             LoggedOut = false,
             UserId = user.Id,
             IsUserVerified = user.IsVerified,
-            IpAddress = context.Connection.RemoteIpAddress!.ToString(),
             UserAgent = context.Request.Headers.UserAgent!,
             SessionCreatedAt = DateTime.UtcNow
         };

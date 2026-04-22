@@ -1,7 +1,9 @@
-﻿namespace Storygame.Web.Auth;
+﻿using System.Security.Cryptography;
+
+namespace Storygame.Web.Auth;
 
 public static class SessionKeyGenerator
 {
     public static string Generate()
-        => Guid.NewGuid().ToString() + Guid.NewGuid().ToString();
+        => Convert.ToBase64String(RandomNumberGenerator.GetBytes(48));
 }

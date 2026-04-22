@@ -20,8 +20,8 @@ public class LibraryRepository(IMongoDatabase database) : ILibraryRepository
     public async Task<bool> CheckIfUserAlreadyHasThisBook(Guid userId, Guid catalogBookId, MediaType mediaType)
         => await books.CountDocumentsAsync(x => x.UserId == userId && x.CatalogBookId == catalogBookId && x.MediaType == mediaType) > 0;
 
-    public async Task<Book> GetBookById(Guid bookId) 
-        => await books.AsQueryable().FirstAsync(x => x.Id == bookId);
+    public async Task<Book> GetBookById(Guid bookId, Guid userId) 
+        => await books.AsQueryable().FirstAsync(x => x.Id == bookId && x.UserId == userId);
 
     public async Task<IEnumerable<Book>> GetUserBooks(Guid userId) 
         => await books.AsQueryable().Where(x => x.UserId == userId).ToListAsync();

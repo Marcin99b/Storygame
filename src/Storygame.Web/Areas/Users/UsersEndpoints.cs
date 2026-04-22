@@ -11,6 +11,8 @@ using System.Security.Claims;
 
 namespace Storygame.Web.Areas.Users;
 
+public record ConfirmLoginRequest(string LoginConfirmationKey);
+
 public static class UsersEndpoints
 {
     public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
@@ -20,7 +22,7 @@ public static class UsersEndpoints
         group.MapGet("/Me", GetMe);
         group.MapPost("/Register", Register).AllowAnonymous();
         group.MapPost("/Login", Login).AllowAnonymous();
-        group.MapGet("/ConfirmLogin/{loginConfirmationKey:string}", ConfirmLogin).AllowAnonymous();
+        group.MapPost("/ConfirmLogin", ConfirmLogin).AllowAnonymous();
         group.MapPost("/Logout", Logout);
 
         return app;
@@ -41,9 +43,9 @@ public static class UsersEndpoints
         //todo send email with confirmation key
     }
 
-    public static async Task ConfirmLogin(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromRoute] string loginConfirmationKey)
+    public static async Task ConfirmLogin(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromBody] ConfirmLoginRequest request)
     {
-        var sessionKey = sessionStorage.ConfirmSession(loginConfirmationKey, http);
+        var sessionKey = sessionStorage.ConfirmSession(request.LoginConfirmationKey, http);
 
         var claims = new List<Claim>
         {

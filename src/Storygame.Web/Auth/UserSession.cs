@@ -8,7 +8,6 @@ public class UserSession
     public required bool LoggedOut { get; set; }
     public required Guid UserId { get; set; }
     public required bool IsUserVerified { get; set; }
-    public required string IpAddress { get; set; }
     public required string UserAgent { get; set; }
     public required DateTime SessionCreatedAt { get; set; }
 
@@ -44,13 +43,7 @@ public class UserSession
 
     private bool VerifyHttpContext(HttpContext context)
     {
-        var ip = context.Connection.RemoteIpAddress?.ToString();
         var userAgent = context.Request.Headers.UserAgent;
-
-        if (IpAddress != ip)
-        {
-            return false;
-        }
 
         if (UserAgent != userAgent)
         {
