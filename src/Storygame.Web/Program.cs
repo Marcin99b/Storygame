@@ -55,6 +55,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+//todo setup cors to hide healthcheck
+//it should be available for local network only
 app.MapHealthChecks("/hc", new HealthCheckOptions()
 {
     ResponseWriter = async (context, report) =>
