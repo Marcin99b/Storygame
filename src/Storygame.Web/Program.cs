@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.HttpOverrides;
 using MongoDB.Driver;
 using Storygame.Cqrs;
 using Storygame.Integrations.Email;
@@ -25,7 +26,7 @@ builder.Services.AddMemoryCache(options =>
     options.ExpirationScanFrequency = TimeSpan.FromMinutes(5);
 });
 
-builder.Services.ConfigureCors();
+builder.Services.ConfigureCors(builder.Configuration);
 
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
@@ -42,7 +43,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(opts =>
 builder.Services.AddOpenApi();
 
 builder.Services.RegisterCqrs();
-builder.Services.RegisterStorage();
+builder.Services.RegisterStorage(builder.Configuration);
 builder.Services.RegisterLogging();
 
 builder.Services.AddHealthChecks().AddMongoDb(sp => sp.GetRequiredService<IMongoClient>(), name: "MongoDB");
@@ -82,6 +83,14 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 StorageModule.Initialize();
+
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.UseCors();
 

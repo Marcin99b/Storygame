@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 
 namespace Storygame.Web.Auth;
@@ -8,13 +9,16 @@ public static class AuthExtensions
 {
     public const string ActionIsRequestedByUserPolicy = "ActionIsRequestedByUser";
 
-    public static void ConfigureCors(this IServiceCollection services)
+    public static void ConfigureCors(this IServiceCollection services, IConfiguration configuration)
     {
+        var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+            ?? ["http://localhost:5173"];
+
         services.AddCors(options =>
         {
             options.AddDefaultPolicy(policy =>
                 policy
-                    .WithOrigins("http://localhost:5173")
+                    .WithOrigins(allowedOrigins)
                     .WithMethods("GET", "POST")
                     .WithHeaders("Content-Type", "X-CSRF-TOKEN")
                     .AllowCredentials()
