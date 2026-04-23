@@ -49,6 +49,7 @@ builder.Services.RegisterLogging();
 builder.Services.AddHealthChecks().AddMongoDb(sp => sp.GetRequiredService<IMongoClient>(), name: "MongoDB");
 
 builder.Services.ConfigureAuth();
+builder.Services.AddValidation();
 
 builder.Services.AddRateLimiter(options =>
 {
