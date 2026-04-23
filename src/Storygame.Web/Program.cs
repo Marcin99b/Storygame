@@ -129,8 +129,12 @@ app
     .MapCatalogEndpoints()
     .MapLibraryEndpoints()
     .MapTrackingEndpoints()
-    .MapUsersEndpoints()
-    .MapMailEndpoints();
+    .MapUsersEndpoints();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapMailEndpoints();
+}
 
 app.MapControllers();
 
