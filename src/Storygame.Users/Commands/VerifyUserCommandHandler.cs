@@ -1,4 +1,5 @@
 ﻿using Storygame.Cqrs;
+using Storygame.Users.Events;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ namespace Storygame.Users.Commands;
 
 public record VerifyUserCommand(string Email, string VerificationCode) : ICommand;
 
-public class VerifyUserCommandHandler(IUsersRepository usersRepository) : ICommandHandler<VerifyUserCommand>
+public class VerifyUserCommandHandler(IUsersRepository usersRepository, IDispatcher dispatcher) : ICommandHandler<VerifyUserCommand>
 {
     public async Task HandleAsync(VerifyUserCommand command)
     {
@@ -26,5 +27,7 @@ public class VerifyUserCommandHandler(IUsersRepository usersRepository) : IComma
 
         user.VerifiedAt = DateTime.UtcNow;
         await usersRepository.UpdateUser(user);
+
+        await dispatcher.PublishAsync(new UserVerifiedEvent(user.Id, user.VerifiedAt.Value));
     }
 }

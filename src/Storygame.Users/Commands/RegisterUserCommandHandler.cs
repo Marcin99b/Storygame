@@ -33,8 +33,8 @@ public class RegisterUserCommandHandler(IUsersRepository usersRepository, EmailC
         var code = RandomNumberGenerator.GetHexString(6).ToUpper();
         var verificationCode = new UserVerificationCode(Guid.NewGuid(), user.Id, code);
         await usersRepository.SaveUserVerificationCode(verificationCode);
+        await emailClient.Send(new MailMessage(user.Email, "Verification code", code, DateTime.UtcNow));
 
         await dispatcher.PublishAsync(new UserRegisteredEvent(user.Id, user.Name, user.Email, user.RegisteredAt));
-        await emailClient.Send(new MailMessage(user.Email, "Verification code", code, DateTime.UtcNow));
     }
 }

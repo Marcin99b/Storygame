@@ -19,6 +19,7 @@ public class UpdateTrackingIndexCommandHandler(ITrackingRepository trackingRepos
         var oldIndex = tracking.CurrentIndex;
         tracking.CurrentIndex = command.NewIndex;
         await trackingRepository.UpdateTracking(tracking);
+
         await dispatcher.PublishAsync(new TrackingIndexUpdatedEvent(tracking.Id, oldIndex, tracking.CurrentIndex));
     }
 }

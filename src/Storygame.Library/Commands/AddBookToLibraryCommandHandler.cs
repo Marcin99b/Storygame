@@ -1,4 +1,5 @@
 ﻿using Storygame.Cqrs;
+using Storygame.Library.Events;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ namespace Storygame.Library.Commands;
 
 public record AddBookToLibraryCommand(Guid UserId, Guid? CatalogBookId, Guid? ImageId, string Title, string Description, MediaType MediaType, int Length) : ICommand;
 
-public class AddBookToLibraryCommandHandler(ILibraryRepository libraryRepository) : ICommandHandler<AddBookToLibraryCommand>
+public class AddBookToLibraryCommandHandler(ILibraryRepository libraryRepository, IDispatcher dispatcher) : ICommandHandler<AddBookToLibraryCommand>
 {
     public async Task HandleAsync(AddBookToLibraryCommand command)
     {
@@ -32,5 +33,7 @@ public class AddBookToLibraryCommandHandler(ILibraryRepository libraryRepository
         };
 
         await libraryRepository.AddBook(book);
+
+        await dispatcher.PublishAsync(new BookAddedToLibraryEvent(book.Id, book.UserId, book.CatalogBookId, book.ImageId, book.Title, book.Description, book.Length, book.MediaType, book.AddedToLibraryAt));
     }
 }

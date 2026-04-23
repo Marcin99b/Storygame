@@ -27,6 +27,7 @@ public class StartTrackingBookCommandHandler(ITrackingRepository trackingReposit
         };
 
         await trackingRepository.AddTracking(tracking);
+
         await dispatcher.PublishAsync(new TrackingStartedEvent(tracking.Id, tracking.LibraryBookId, tracking.UserId, tracking.TotalLength));
     }
 }
