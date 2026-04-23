@@ -13,8 +13,8 @@ public static class AuthExtensions
         {
             options.AddDefaultPolicy(policy =>
                 policy
-                    .SetIsOriginAllowed(_ => true)
-                    .AllowAnyMethod()
+                    .WithOrigins("http://localhost:5173/")
+                    .WithMethods("GET", "POST")
                     .AllowAnyHeader()
                     .AllowCredentials());
         });
