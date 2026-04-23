@@ -30,7 +30,7 @@ public class RegisterUserCommandHandler(IUsersRepository usersRepository, EmailC
 
         await usersRepository.AddUser(user);
 
-        var code = RandomNumberGenerator.GetHexString(6).ToUpper();
+        var code = RandomNumberGenerator.GetHexString(48).ToUpper();
         var verificationCode = new UserVerificationCode(Guid.NewGuid(), user.Id, code);
         await usersRepository.SaveUserVerificationCode(verificationCode);
         await emailClient.Send(new MailMessage(user.Email, "Verification code", code, DateTime.UtcNow));
