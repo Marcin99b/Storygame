@@ -1,5 +1,5 @@
 import { useRevalidator } from "react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { catalogApi } from "../api/catalog";
 import type { CatalogBook } from "../api/types";
 import { CatalogBookCard } from "../components/CatalogBookCard";
@@ -12,29 +12,55 @@ export async function clientLoader() {
 
 export const meta = () => [{ title: "Catalog — Storygame" }];
 
-const matchesTypeFilter = (book: CatalogBook, filter: TypeFilter): boolean => {
-  if (filter === "all") return true;
-  if (filter === "text") return book.textEditionFields.exist;
-  return book.audiobookFields.exist;
-};
-
 type LoaderData = { books: CatalogBook[] };
 
+const typeFilterToParams = (filter: TypeFilter) => {
+  if (filter === "text") return { hasTextEdition: true };
+  if (filter === "audio") return { hasAudiobook: true };
+  return {};
+};
+
 const Catalog = ({ loaderData }: { loaderData: LoaderData }) => {
-  const { books } = loaderData;
+  const [books, setBooks] = useState(loaderData.books);
   const revalidator = useRevalidator();
   const [titleFilter, setTitleFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [searching, setSearching] = useState(false);
+  const debounceRef = useRef<number | null>(null);
 
-  const filtered = books.filter(
-    (b) =>
-      b.title.toLowerCase().includes(titleFilter.toLowerCase()) &&
-      matchesTypeFilter(b, typeFilter),
-  );
+  useEffect(() => {
+    setBooks(loaderData.books);
+  }, [loaderData.books]);
+
+  useEffect(() => {
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    debounceRef.current = window.setTimeout(async () => {
+      setSearching(true);
+      try {
+        const data = await catalogApi.search({
+          titleContains: titleFilter.trim() || undefined,
+          ...typeFilterToParams(typeFilter),
+        });
+        setBooks(data.books);
+      } finally {
+        setSearching(false);
+      }
+    }, 250);
+    return () => {
+      if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    };
+  }, [titleFilter, typeFilter]);
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Catalog</h1>
+      <header className="mb-8">
+        <h1 className="font-display text-3xl font-semibold text-ink-800 dark:text-paper-100">
+          Catalog
+        </h1>
+        <p className="text-sm text-ink-700/70 dark:text-paper-200/70 mt-1">
+          Browse curated titles and add them to your library.
+        </p>
+      </header>
 
       <CatalogFilters
         titleFilter={titleFilter}
@@ -43,11 +69,20 @@ const Catalog = ({ loaderData }: { loaderData: LoaderData }) => {
         onTypeChange={setTypeFilter}
       />
 
-      {filtered.length === 0 ? (
-        <p className="text-center py-12 text-gray-500 dark:text-gray-400">No books found.</p>
+      {searching && (
+        <p className="text-xs text-ink-700/50 dark:text-paper-200/50 mb-3">
+          Searching...
+        </p>
+      )}
+
+      {books.length === 0 ? (
+        <div className="text-center py-16 text-ink-700/60 dark:text-paper-200/60">
+          <p className="font-display text-xl mb-1">No matches found</p>
+          <p className="text-sm">Try a different title or format.</p>
+        </div>
       ) : (
         <div className="grid gap-3">
-          {filtered.map((book) => (
+          {books.map((book) => (
             <CatalogBookCard
               key={book.id}
               book={book}

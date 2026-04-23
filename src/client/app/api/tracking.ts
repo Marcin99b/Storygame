@@ -7,8 +7,8 @@ export interface GetTrackingsResult {
 
 export const trackingApi = {
   getTrackings: () => api.get<GetTrackingsResult>("/tracking/"),
-  startTracking: (libraryBookId: string, totalLength: number) =>
-    api.post<void>("/tracking/", { libraryBookId, totalLength }),
+  startTracking: (libraryBookId: string) =>
+    api.post<void>("/tracking/", { libraryBookId }),
   updateIndex: (trackingId: string, newIndex: number) =>
     api.post<void>(`/tracking/${trackingId}/index`, { newIndex }),
 };
