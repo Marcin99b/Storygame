@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Storygame.Contracts.WebApi;
+using Storygame.Contracts.WebApi.Requests;
+using Storygame.Contracts.WebApi.Responses;
 using Storygame.Cqrs;
 using Storygame.Library.Queries;
 using Storygame.Ownership;

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Net.Http.Headers;
 using Storygame.Contracts.WebApi;
+using Storygame.Contracts.WebApi.Requests;
+using Storygame.Contracts.WebApi.Responses;
 using Storygame.Integrations.Email;
 using System.Net;
 using System.Net.Http.Json;

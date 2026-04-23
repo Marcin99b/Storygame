@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Storygame.Catalog.Queries;
-using Storygame.Contracts.WebApi;
+using Storygame.Contracts.WebApi.Responses;
 using Storygame.Cqrs;
 using Storygame.Web.Auth;
 using Storygame.Web.Extencions;

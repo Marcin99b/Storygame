@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Storygame.Client;
 using Storygame.Contracts.WebApi;
+using Storygame.Contracts.WebApi.Dtos;
 
 public static class Scenarios
 {

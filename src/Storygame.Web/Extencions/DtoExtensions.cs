@@ -1,5 +1,7 @@
 ﻿using Storygame.Catalog.Queries;
 using Storygame.Contracts.WebApi;
+using Storygame.Contracts.WebApi.Dtos;
+using Storygame.Contracts.WebApi.Responses;
 using Storygame.Library.Queries;
 using Storygame.Tracking.Queries;
 

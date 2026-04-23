@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Storygame.Contracts.WebApi;
+using Storygame.Contracts.WebApi.Requests;
+using Storygame.Contracts.WebApi.Responses;
 using Storygame.Cqrs;
 using Storygame.Integrations.Email;
 using Storygame.Users;
