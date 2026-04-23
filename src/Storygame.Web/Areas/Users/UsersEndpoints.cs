@@ -31,7 +31,7 @@ public static class UsersEndpoints
         group.MapGet("/CSRF", (IAntiforgery forgery, HttpContext ctx) =>
         {
             var tokens = forgery.GetAndStoreTokens(ctx);
-            return Results.Ok(new { token = tokens.RequestToken });
+            return tokens.RequestToken;
         }).AllowAnonymous();
 
         return app;

@@ -62,6 +62,7 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
 
     private async Task<TResponse> Get<TResponse>(string url)
     {
+        await UpdateCSRF();
         var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
@@ -70,6 +71,7 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
 
     private async Task Post(string url)
     {
+        await UpdateCSRF();
         var response = await client.PostAsync(url, null);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
@@ -77,9 +79,24 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
 
     private async Task Post<TRequest>(string url, TRequest request)
     {
+        await UpdateCSRF();
         var response = await client.PostAsJsonAsync(url, request, jsonOptions);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
+    }
+
+    private async Task UpdateCSRF()
+    {
+        var response = await client.GetAsync(UsersPath + "/CSRF");
+        response.EnsureSuccessStatusCode();
+        var token = await response.Content.ReadAsStringAsync();
+
+        if (client.DefaultRequestHeaders.Contains("X-CSRF-TOKEN"))
+        {
+            client.DefaultRequestHeaders.Remove("X-CSRF-TOKEN");
+        }
+
+        client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", token);
     }
 
     private void TryUpdateCookie(HttpResponseMessage response)
