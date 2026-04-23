@@ -1,6 +1,6 @@
 export interface CatalogBook {
   id: string;
-  imageId?: string;
+  imageId?: string | null;
   title: string;
   description: string;
   textEditionFields: { exist: boolean; totalPages: number };
@@ -12,7 +12,8 @@ export type MediaType = "Ebook" | "Paperback" | "Audiobook";
 export interface LibraryBook {
   id: string;
   userId: string;
-  catalogBookId?: string;
+  catalogBookId?: string | null;
+  imageId?: string | null;
   title: string;
   description: string;
   mediaType: MediaType;
@@ -23,7 +24,6 @@ export interface LibraryBook {
 
 export interface UserProfile {
   name: string;
-  isVerified: boolean;
 }
 
 export interface Tracking {
@@ -34,4 +34,11 @@ export interface Tracking {
   currentIndex: number;
   isStarted: boolean;
   isFinished: boolean;
+}
+
+export interface MailMessage {
+  receiver: string;
+  subject: string;
+  message: string;
+  sentAt: string;
 }

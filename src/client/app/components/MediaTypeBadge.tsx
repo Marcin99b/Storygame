@@ -4,14 +4,26 @@ type Props = {
   type: MediaType;
 };
 
-const BADGE_COLORS: Record<MediaType, string> = {
-  Ebook: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
-  Paperback: "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
-  Audiobook: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
+const BADGE_STYLES: Record<MediaType, string> = {
+  Ebook:
+    "bg-plum-500/10 text-plum-700 dark:bg-plum-500/20 dark:text-plum-500 ring-plum-500/20",
+  Paperback:
+    "bg-amber-accent/10 text-amber-accent dark:bg-amber-accent/20 ring-amber-accent/20",
+  Audiobook:
+    "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 ring-emerald-500/20",
+};
+
+const ICONS: Record<MediaType, string> = {
+  Ebook: "📖",
+  Paperback: "📚",
+  Audiobook: "🎧",
 };
 
 export const MediaTypeBadge = ({ type }: Props) => (
-  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${BADGE_COLORS[type]}`}>
+  <span
+    className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ring-1 ring-inset ${BADGE_STYLES[type]}`}
+  >
+    <span aria-hidden>{ICONS[type]}</span>
     {type}
   </span>
 );

@@ -2,7 +2,8 @@ import { api } from "./client";
 import type { LibraryBook, MediaType } from "./types";
 
 export interface AddBookRequest {
-  catalogBookId?: string;
+  catalogBookId?: string | null;
+  imageId?: string | null;
   title: string;
   description: string;
   mediaType: MediaType;

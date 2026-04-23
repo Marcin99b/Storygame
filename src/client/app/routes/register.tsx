@@ -20,33 +20,34 @@ export async function clientLoader() {
 }
 
 export function meta() {
-  return [{ title: "Sign in — Storygame" }];
+  return [{ title: "Create account — Storygame" }];
 }
 
-type Step = "email" | "confirm";
+type Step = "form" | "verify";
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<Step>("email");
+  const [step, setStep] = useState<Step>("form");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [confirmKey, setConfirmKey] = useState("");
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleRequestLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!name.trim() || !email.trim()) return;
     setLoading(true);
     setError(null);
     try {
-      await usersApi.login({ email: email.trim() });
-      setStep("confirm");
+      await usersApi.register({ name: name.trim(), email: email.trim() });
+      setStep("verify");
     } catch (err) {
       if (err instanceof ApiError && err.status === 429) {
-        setError("Too many attempts. Please wait a minute and try again.");
+        setError("Too many attempts. Please wait a minute.");
       } else {
         setError(
-          "We couldn't send the sign-in email. Check that this address is registered and verified."
+          "Couldn't create your account. That email may already be registered."
         );
       }
     } finally {
@@ -54,25 +55,28 @@ export default function Login() {
     }
   };
 
-  const handleConfirm = async (e: React.FormEvent) => {
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!confirmKey.trim()) return;
+    if (!code.trim()) return;
     setLoading(true);
     setError(null);
     try {
-      await usersApi.confirmLogin({ loginConfirmationKey: confirmKey.trim() });
-      navigate("/");
+      await usersApi.verify({
+        email: email.trim(),
+        verificationCode: code.trim(),
+      });
+      navigate("/login");
     } catch {
-      setError("Invalid or expired code. Try requesting a new sign-in email.");
+      setError("Invalid or expired code.");
       setLoading(false);
     }
   };
 
-  if (step === "confirm") {
+  if (step === "verify") {
     return (
       <AuthShell
-        title="Check your inbox"
-        subtitle={`We sent a one-time sign-in code to ${email}. Paste it below to continue.`}
+        title="Verify your email"
+        subtitle={`We sent a verification code to ${email}. Paste it below to activate your account.`}
         footer={
           <Link
             to="/mail"
@@ -82,13 +86,13 @@ export default function Login() {
           </Link>
         }
       >
-        <form onSubmit={handleConfirm} className="flex flex-col gap-4">
+        <form onSubmit={handleVerify} className="flex flex-col gap-4">
           <div>
-            <label className={labelClass}>Sign-in code</label>
+            <label className={labelClass}>Verification code</label>
             <input
               type="text"
-              value={confirmKey}
-              onChange={(e) => setConfirmKey(e.target.value)}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               placeholder="Paste the code from the email"
               required
               autoFocus
@@ -99,19 +103,11 @@ export default function Login() {
             <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           )}
           <button type="submit" disabled={loading} className={primaryBtnClass}>
-            {loading ? "Signing you in..." : "Sign in"}
+            {loading ? "Verifying..." : "Verify & continue"}
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              setStep("email");
-              setConfirmKey("");
-              setError(null);
-            }}
-            className="text-xs text-ink-700/70 dark:text-paper-200/70 hover:text-plum-600 dark:hover:text-plum-500 transition-colors cursor-pointer"
-          >
-            ← Use a different email
-          </button>
+          <p className="text-xs text-ink-700/60 dark:text-paper-200/60 text-center">
+            After verifying, you'll sign in from the login page.
+          </p>
         </form>
       </AuthShell>
     );
@@ -119,21 +115,33 @@ export default function Login() {
 
   return (
     <AuthShell
-      title="Welcome back"
-      subtitle="We'll email you a one-time code to sign in."
+      title="Create your account"
+      subtitle="Start tracking what you read and listen to."
       footer={
         <span className="text-ink-700/70 dark:text-paper-200/70">
-          New here?{" "}
+          Already have an account?{" "}
           <Link
-            to="/register"
+            to="/login"
             className="text-plum-600 dark:text-plum-500 hover:underline font-medium"
           >
-            Create an account
+            Sign in
           </Link>
         </span>
       }
     >
-      <form onSubmit={handleRequestLogin} className="flex flex-col gap-4">
+      <form onSubmit={handleRegister} className="flex flex-col gap-4">
+        <div>
+          <label className={labelClass}>Display name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="How we'll greet you"
+            required
+            autoFocus
+            className={inputClass}
+          />
+        </div>
         <div>
           <label className={labelClass}>Email</label>
           <input
@@ -142,7 +150,6 @@ export default function Login() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             required
-            autoFocus
             className={inputClass}
           />
         </div>
@@ -150,7 +157,7 @@ export default function Login() {
           <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
         )}
         <button type="submit" disabled={loading} className={primaryBtnClass}>
-          {loading ? "Sending code..." : "Send sign-in code"}
+          {loading ? "Creating account..." : "Create account"}
         </button>
       </form>
     </AuthShell>

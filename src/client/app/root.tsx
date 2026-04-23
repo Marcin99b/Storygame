@@ -19,7 +19,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap",
   },
 ];
 
@@ -32,7 +32,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="antialiased">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -46,15 +46,15 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
+  let message = "Something went sideways";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? "Page not found" : "Error";
     details =
       error.status === 404
-        ? "The requested page could not be found."
+        ? "The page you're looking for isn't here."
         : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
@@ -62,14 +62,18 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
+    <main className="min-h-screen flex items-center justify-center p-6">
+      <div className="max-w-lg w-full bg-white dark:bg-ink-800 rounded-2xl border border-paper-200 dark:border-ink-700 p-8 shadow-sm">
+        <h1 className="font-display text-3xl font-semibold text-ink-800 dark:text-paper-100 mb-2">
+          {message}
+        </h1>
+        <p className="text-ink-700 dark:text-paper-200">{details}</p>
+        {stack && (
+          <pre className="w-full mt-4 p-4 overflow-x-auto text-xs bg-paper-100 dark:bg-ink-900 rounded-lg">
+            <code>{stack}</code>
+          </pre>
+        )}
+      </div>
     </main>
   );
 }
