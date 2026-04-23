@@ -10,6 +10,7 @@ using Storygame.Users.Commands;
 using Storygame.Users.Queries;
 using Storygame.Web.Auth;
 using System.Security.Claims;
+using static System.Net.WebRequestMethods;
 
 namespace Storygame.Web.Areas.Users;
 
@@ -46,20 +47,38 @@ public static class UsersEndpoints
         return new MeResponse(user.Name);
     }
 
-    public static async Task Register(IDispatcher dispatcher, [FromBody] RegisterRequest request)
+    public static async Task Register(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, [FromBody] RegisterRequest request)
     {
+        if (!throttle.TryAcquire(nameof(Register), request.Email))
+        {
+            http.Response.StatusCode = 429;
+            return;
+        }
+
         var command = new RegisterUserCommand(request.Name, request.Email);
         await dispatcher.SendAsync(command);
     }
 
-    public static async Task Verify(IDispatcher dispatcher, [FromBody] VerifyUserRequest request)
+    public static async Task Verify(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, [FromBody] VerifyUserRequest request)
     {
+        if (!throttle.TryAcquire(nameof(Verify), request.Email))
+        {
+            http.Response.StatusCode = 429;
+            return;
+        }
+
         var command = new VerifyUserCommand(request.Email, request.VerificationCode);
         await dispatcher.SendAsync(command);
     }
 
-    public static async Task Login(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, EmailClient emailClient, [FromBody] LoginRequest request)
+    public static async Task Login(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, SessionStorage sessionStorage, EmailClient emailClient, [FromBody] LoginRequest request)
     {
+        if (!throttle.TryAcquire(nameof(Login), request.Email))
+        {
+            http.Response.StatusCode = 429;
+            return;
+        }
+
         var user = (await dispatcher.QueryAsync<GetUserByEmailQuery, GetUserByEmailQueryResult>(new GetUserByEmailQuery(request.Email))).User;
         if (!user.IsVerified)
         {

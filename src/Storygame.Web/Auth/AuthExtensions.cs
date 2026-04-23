@@ -55,6 +55,7 @@ public static class AuthExtensions
             };
         });
 
+        services.AddSingleton<PerEmailThrottle>();
         services.AddSingleton<SessionStorage>();
         services.AddScoped<UserSessionProvider>();
 
