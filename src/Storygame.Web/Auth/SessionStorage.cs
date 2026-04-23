@@ -27,11 +27,11 @@ public class SessionStorage
             UserId = user.Id,
             IsUserVerified = user.IsVerified,
             UserAgent = context.Request.Headers.UserAgent!,
-            SessionCreatedAt = DateTime.UtcNow
+            SessionCreatedAt = DateTime.UtcNow,
         };
 
         //verify if session is valid for context that created it
-        if (session.AllowUserToEnterApp(context) == false)
+        if (session.AllowUserToEnterApp(context, isConfirmed: false) == false)
         {
             throw new Exception($"Session creation is broken.");
         }
@@ -48,7 +48,7 @@ public class SessionStorage
     {
         if (notConfirmedSessions.Remove(confirmationKey, out var session))
         {
-            if (session.AllowUserToEnterApp(context) == false)
+            if (session.AllowUserToEnterApp(context, isConfirmed: false) == false)
             {
                 throw new Exception($"Cannot get session for current context");
             }
@@ -71,8 +71,9 @@ public class SessionStorage
     {
         if (activeSessions.TryGetValue(key, out var session))
         {
-            if (session.AllowUserToEnterApp(context) == false)
+            if (session.AllowUserToEnterApp(context, isConfirmed: true) == false)
             {
+                activeSessions.Remove(key, out var _);
                 throw new Exception($"Cannot get session for current context");
             }
 

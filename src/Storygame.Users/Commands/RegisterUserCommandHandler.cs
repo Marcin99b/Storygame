@@ -16,7 +16,7 @@ public class RegisterUserCommandHandler(IUsersRepository usersRepository, EmailC
     {
         if (await usersRepository.CheckIfEmailExist(command.Email))
         {
-            throw new ArgumentException($"User with email {command.Email} is already registered");
+            throw new ArgumentException($"User is already registered");
         }
 
         var user = new User()

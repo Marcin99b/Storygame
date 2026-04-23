@@ -15,7 +15,7 @@ public class VerifyUserCommandHandler(IUsersRepository usersRepository, IDispatc
         var user = await usersRepository.GetUserByEmail(command.Email);
         if (user.IsVerified)
         {
-            throw new ArgumentException($"User with email {command.Email} is already verified");
+            throw new ArgumentException($"User is already verified");
         }
 
         var verificationCode = await usersRepository.GetUserVerificationCode(user.Id);

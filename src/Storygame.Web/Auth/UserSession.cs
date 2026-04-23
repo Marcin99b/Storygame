@@ -10,8 +10,9 @@ public class UserSession
     public required bool IsUserVerified { get; set; }
     public required string UserAgent { get; set; }
     public required DateTime SessionCreatedAt { get; set; }
+    public DateTime LastApiCall { get; set; }
 
-    public bool AllowUserToEnterApp(HttpContext context)
+    public bool AllowUserToEnterApp(HttpContext context, bool isConfirmed)
     {
         if (LoggedOut)
         {
@@ -38,7 +39,33 @@ public class UserSession
             return false;
         }
 
+        if (IsExpired(isConfirmed))
+        {
+            return false;
+        }
+
         return VerifyHttpContext(context);
+    }
+
+    public bool IsExpired(bool isConfirmed)
+    {
+        var now = DateTime.UtcNow;
+        if (isConfirmed)
+        {
+            // api call is set
+            if (LastApiCall > MIN_SESSION_CREATED_DATE_TIME)
+            {
+                return LastApiCall < now.AddDays(-7);
+            }
+            else
+            {
+                // user has 15 minutes for first api call after /ConfirmLogin (after ConfirmationKey step)
+                return SessionCreatedAt < now.AddMinutes(-15);
+            }
+        }
+
+        // user has 15 minutes for first api call after /Login (ConfirmationKey step)
+        return SessionCreatedAt < now.AddMinutes(-15);
     }
 
     private bool VerifyHttpContext(HttpContext context)

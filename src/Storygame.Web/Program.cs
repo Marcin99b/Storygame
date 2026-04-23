@@ -76,6 +76,9 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 StorageModule.Initialize();
@@ -134,6 +137,8 @@ app
 if (app.Environment.IsDevelopment())
 {
     app.MapMailEndpoints();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.MapControllers();
