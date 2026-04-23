@@ -28,6 +28,6 @@ public class VerifyUserCommandHandler(IUsersRepository usersRepository, IDispatc
         user.VerifiedAt = DateTime.UtcNow;
         await usersRepository.UpdateUser(user);
 
-        await dispatcher.PublishAsync(new UserVerifiedEvent(user.Id, user.VerifiedAt.Value));
+        await dispatcher.PublishAsync(UserVerifiedEvent.FromUser(user));
     }
 }

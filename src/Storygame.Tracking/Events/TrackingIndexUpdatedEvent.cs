@@ -5,4 +5,8 @@ using System.Text;
 
 namespace Storygame.Tracking.Events;
 
-public record TrackingIndexUpdatedEvent(Guid TrackingId, int OldIndex, int NewIndex) : IEvent;
+public record TrackingIndexUpdatedEvent(Guid TrackingId, int NewIndex) : IEvent
+{
+    public static TrackingIndexUpdatedEvent FromTracking(Tracking tracking)
+        => new (tracking.Id, tracking.CurrentIndex);
+}

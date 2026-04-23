@@ -34,6 +34,6 @@ public class AddBookToLibraryCommandHandler(ILibraryRepository libraryRepository
 
         await libraryRepository.AddBook(book);
 
-        await dispatcher.PublishAsync(new BookAddedToLibraryEvent(book.Id, book.UserId, book.CatalogBookId, book.ImageId, book.Title, book.Description, book.Length, book.MediaType, book.AddedToLibraryAt));
+        await dispatcher.PublishAsync(BookAddedToLibraryEvent.FromBook(book));
     }
 }

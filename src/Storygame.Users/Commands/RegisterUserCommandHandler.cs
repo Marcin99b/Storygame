@@ -35,6 +35,6 @@ public class RegisterUserCommandHandler(IUsersRepository usersRepository, EmailC
         await usersRepository.SaveUserVerificationCode(verificationCode);
         await emailClient.Send(new MailMessage(user.Email, "Verification code", code, DateTime.UtcNow));
 
-        await dispatcher.PublishAsync(new UserRegisteredEvent(user.Id, user.Name, user.Email, user.RegisteredAt));
+        await dispatcher.PublishAsync(UserRegisteredEvent.FromUser(user));
     }
 }
