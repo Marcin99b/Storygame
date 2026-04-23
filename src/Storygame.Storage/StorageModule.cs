@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
@@ -15,29 +16,24 @@ namespace Storygame.Storage;
 
 public static class StorageModule
 {
-    public static void RegisterStorage(this IServiceCollection services)
+    public static void RegisterStorage(this IServiceCollection services, IConfiguration configuration)
     {
-        var mongoSettings = new MongoClientSettings() 
-        {
-            Server = new MongoServerAddress("localhost", 27017),
+        var connectionString = configuration.GetConnectionString("MongoDB") ?? "mongodb://localhost:27017";
+        var mongoSettings = MongoClientSettings.FromConnectionString(connectionString);
 
-            ConnectTimeout = TimeSpan.FromSeconds(10),
-            ServerSelectionTimeout = TimeSpan.FromSeconds(10),
-            SocketTimeout = TimeSpan.FromSeconds(30),
+        mongoSettings.ConnectTimeout = TimeSpan.FromSeconds(10);
+        mongoSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(10);
+        mongoSettings.SocketTimeout = TimeSpan.FromSeconds(30);
+        mongoSettings.MaxConnectionPoolSize = 100;
+        mongoSettings.MinConnectionPoolSize = 0;
+        mongoSettings.MaxConnectionIdleTime = TimeSpan.FromMinutes(10);
+        mongoSettings.RetryWrites = true;
+        mongoSettings.RetryReads = true;
+        mongoSettings.ReadConcern = ReadConcern.Majority;
+        mongoSettings.WriteConcern = WriteConcern.WMajority;
+        mongoSettings.ReadPreference = ReadPreference.Primary;
+        mongoSettings.ApplicationName = "Storygame";
 
-            MaxConnectionPoolSize = 100,
-            MinConnectionPoolSize = 0,
-            MaxConnectionIdleTime = TimeSpan.FromMinutes(10),
-
-            RetryWrites = true,
-            RetryReads = true,
-
-            ReadConcern = ReadConcern.Majority,
-            WriteConcern = WriteConcern.WMajority,
-            ReadPreference = ReadPreference.Primary,
-
-            ApplicationName = "Storygame",
-        };
         var mongoClient = new MongoClient(mongoSettings);
         var database = mongoClient.GetDatabase("Storygame");
 
