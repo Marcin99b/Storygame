@@ -14,7 +14,10 @@ public static class TrackingEndpoints
 {
     public static IEndpointRouteBuilder MapTrackingEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/tracking").WithTags("Tracking").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy).RequireRateLimiting("MainRateLimiter");
+        var group = app.MapGroup("/api/tracking").WithTags("Tracking")
+            .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
+            .RequireRateLimiting("MainRateLimiter")
+            .ValidateAntiforgery();
 
         group.MapGet("/", GetTrackings);
         group.MapPost("/", StartTracking);

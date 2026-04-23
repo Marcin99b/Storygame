@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
 namespace Storygame.Web.Auth;
@@ -108,6 +109,32 @@ public static class AuthExtensions
             }
 
             return next(ctx);
+        });
+    }
+
+    public static TBuilder ValidateAntiforgery<TBuilder>(this TBuilder builder)
+        where TBuilder : IEndpointConventionBuilder
+    {
+        return builder.AddEndpointFilter(async (context, next) =>
+        {
+            var method = context.HttpContext.Request.Method;
+            if (HttpMethods.IsGet(method) || HttpMethods.IsHead(method)
+                || HttpMethods.IsOptions(method) || HttpMethods.IsTrace(method))
+            {
+                return await next(context);
+            }
+
+            var antiforgery = context.HttpContext.RequestServices.GetRequiredService<IAntiforgery>();
+            try
+            {
+                await antiforgery.ValidateRequestAsync(context.HttpContext);
+            }
+            catch (AntiforgeryValidationException)
+            {
+                return Results.BadRequest("Antiforgery token validation failed.");
+            }
+
+            return await next(context);
         });
     }
 }

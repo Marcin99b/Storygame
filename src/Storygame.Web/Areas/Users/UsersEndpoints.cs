@@ -19,7 +19,8 @@ public static class UsersEndpoints
     {
         var group = app.MapGroup("/api/users").WithTags("Users")
             .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
-            .RequireRateLimiting("AuthRateLimiter");
+            .RequireRateLimiting("AuthRateLimiter")
+            .ValidateAntiforgery();
 
         group.MapGet("/Me", GetMe);
         group.MapPost("/Register", Register).AllowAnonymous();

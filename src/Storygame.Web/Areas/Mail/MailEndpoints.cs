@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Storygame.Contracts.WebApi;
 using Storygame.Integrations.Email;
+using Storygame.Web.Auth;
 
 namespace Storygame.Web.Areas.Mail;
 
@@ -14,7 +15,10 @@ public static class MailEndpoints
     /// </summary>
     public static IEndpointRouteBuilder MapMailEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/mail").WithTags("Mail").AllowAnonymous().RequireRateLimiting("MainRateLimiter");
+        var group = app.MapGroup("/api/mail").WithTags("Mail")
+            .AllowAnonymous()
+            .RequireRateLimiting("MainRateLimiter")
+            .ValidateAntiforgery();
 
         group.MapGet("/{email}", ReadMail);
 

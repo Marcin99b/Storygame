@@ -62,7 +62,6 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
 
     private async Task<TResponse> Get<TResponse>(string url)
     {
-        await UpdateCSRF();
         var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);

@@ -13,7 +13,10 @@ public static class LibraryEndpoints
 {
     public static IEndpointRouteBuilder MapLibraryEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/library").WithTags("Library").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy).RequireRateLimiting("MainRateLimiter");
+        var group = app.MapGroup("/api/library").WithTags("Library")
+            .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
+            .RequireRateLimiting("MainRateLimiter")
+            .ValidateAntiforgery();
 
         group.MapGet("/", GetLibrary);
         group.MapPost("/", AddToLibrary);
