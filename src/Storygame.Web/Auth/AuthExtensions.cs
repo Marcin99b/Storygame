@@ -102,6 +102,8 @@ public static class AuthExtensions
                 if (sessionProvider != null)
                 {
                     sessionProvider.SessionKey = sessionKey;
+                    var session = sessionProvider.GetSession(ctx);
+                    session.LastApiCall = DateTime.UtcNow;
                 }
             }
 
