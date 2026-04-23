@@ -1,3 +1,5 @@
-﻿namespace Storygame.Contracts.WebApi;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record AddToLibraryRequest(Guid? CatalogBookId, Guid? ImageId, string Title, string Description, MediaTypeDto MediaType, int Length);
+namespace Storygame.Contracts.WebApi;
+
+public record AddToLibraryRequest(Guid? CatalogBookId, Guid? ImageId, [MaxLength(30)] string Title, [MaxLength(500)] string Description, MediaTypeDto MediaType, int Length);

@@ -1,3 +1,5 @@
-﻿namespace Storygame.Contracts.WebApi;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record LoginRequest(string Email);
+namespace Storygame.Contracts.WebApi;
+
+public record LoginRequest([MaxLength(100)] [EmailAddress] string Email);

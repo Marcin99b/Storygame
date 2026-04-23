@@ -1,3 +1,5 @@
-﻿namespace Storygame.Contracts.WebApi;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record VerifyUserRequest(string Email, string VerificationCode);
+namespace Storygame.Contracts.WebApi;
+
+public record VerifyUserRequest([MaxLength(100)][EmailAddress] string Email, [MaxLength(100)] string VerificationCode);

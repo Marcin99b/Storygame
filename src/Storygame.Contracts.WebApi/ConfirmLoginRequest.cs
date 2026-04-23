@@ -1,3 +1,5 @@
-﻿namespace Storygame.Contracts.WebApi;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record ConfirmLoginRequest(string LoginConfirmationKey);
+namespace Storygame.Contracts.WebApi;
+
+public record ConfirmLoginRequest([MaxLength(100)]string LoginConfirmationKey);
