@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Storygame.Contracts.WebApi;
@@ -16,7 +17,9 @@ public static class UsersEndpoints
 {
     public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/users").WithTags("Users").RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy).RequireRateLimiting("AuthRateLimiter");
+        var group = app.MapGroup("/api/users").WithTags("Users")
+            .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
+            .RequireRateLimiting("AuthRateLimiter");
 
         group.MapGet("/Me", GetMe);
         group.MapPost("/Register", Register).AllowAnonymous();
@@ -24,6 +27,12 @@ public static class UsersEndpoints
         group.MapPost("/Login", Login).AllowAnonymous();
         group.MapPost("/ConfirmLogin", ConfirmLogin).AllowAnonymous();
         group.MapPost("/Logout", Logout);
+
+        group.MapGet("/CSRF", (IAntiforgery forgery, HttpContext ctx) =>
+        {
+            var tokens = forgery.GetAndStoreTokens(ctx);
+            return Results.Ok(new { token = tokens.RequestToken });
+        }).AllowAnonymous();
 
         return app;
     }

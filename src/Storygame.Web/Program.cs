@@ -127,6 +127,7 @@ app.UseAuthentication();
 app.ConfigureSetSession();
 
 app.UseAuthorization();
+app.UseAntiforgery();
 
 app
     .MapCatalogEndpoints()
