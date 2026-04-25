@@ -8,6 +8,12 @@
   <Folder Name="/Contracts/">
     <Project Path="Storygame.Contracts.WebApi/Storygame.Contracts.WebApi.csproj" Id="ed4ee1c5-b302-46da-86da-ff49ed36ad85" />
   </Folder>
+  <Folder Name="/Domain/">
+    <Project Path="Storygame.Catalog/Storygame.Catalog.csproj" />
+    <Project Path="Storygame.Library/Storygame.Library.csproj" Id="73e77672-187c-4a7c-8b85-1ce0dad3103a" />
+    <Project Path="Storygame.Tracking/Storygame.Tracking.csproj" Id="b4783af4-fa21-44a1-8afe-6c2123e8c9f4" />
+    <Project Path="Storygame.Users/Storygame.Users.csproj" Id="6a36ab7f-680f-4e19-bc2d-a96d5bbf2155" />
+  </Folder>
   <Folder Name="/Integrations/">
     <Project Path="Storygame.Integrations.Email/Storygame.Integrations.Email.csproj" Id="2d834aa7-701e-45bb-80ce-9d0bf5d7393d" />
   </Folder>
@@ -17,10 +23,10 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
-  <Project Path="Storygame.Catalog/Storygame.Catalog.csproj" />
+  <Folder Name="/Tests/">
+    <Project Path="Storygame.Tests.Integration/Storygame.Tests.Integration.csproj" Id="c6345d9f-db65-4769-8567-540e35667ae5" />
+    <Project Path="Storygame.Tests.Unit/Storygame.Tests.Unit.csproj" Id="a87e1c12-de2d-4e38-b7be-0776d8bc9b30" />
+  </Folder>
   <Project Path="Storygame.Client/Storygame.Client.csproj" Id="a4ebf8cf-c5c9-4288-9fb6-55fa12327abb" />
-  <Project Path="Storygame.Library/Storygame.Library.csproj" Id="73e77672-187c-4a7c-8b85-1ce0dad3103a" />
-  <Project Path="Storygame.Tracking/Storygame.Tracking.csproj" Id="b4783af4-fa21-44a1-8afe-6c2123e8c9f4" />
-  <Project Path="Storygame.Users/Storygame.Users.csproj" Id="6a36ab7f-680f-4e19-bc2d-a96d5bbf2155" />
   <Project Path="Storygame.Web/Storygame.Web.csproj" Id="5ad8d628-e128-4138-9f45-d5b8ae5a78f4" />
 </Solution>
