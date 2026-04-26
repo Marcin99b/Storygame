@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace Storygame.Client;
 
-public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
+public class StorygameClient
 {
     private const string CatalogPath = "/api/catalog";
     private const string LibraryPath = "/api/library";
@@ -19,12 +19,21 @@ public class StorygameClient(Uri address, TimeSpan? customTimeout = null)
     private const string MailPath = "/api/mail";
 
     private static readonly JsonSerializerOptions jsonOptions = CreateJsonOptions();
+    private readonly HttpClient client;
 
-    private readonly HttpClient client = new HttpClient()
+    public StorygameClient(Uri address, TimeSpan? customTimeout = null)
     {
-        BaseAddress = new UriBuilder(address.Scheme, address.Host, address.Port).Uri,
-        Timeout = customTimeout ?? TimeSpan.FromSeconds(10),
-    };
+        client = new HttpClient()
+        {
+            BaseAddress = new UriBuilder(address.Scheme, address.Host, address.Port).Uri,
+            Timeout = customTimeout ?? TimeSpan.FromSeconds(10),
+        };
+    }
+
+    public StorygameClient(HttpClient httpClient)
+    {
+        client = httpClient;
+    }
 
     public Task Login(LoginRequest request) 
         => Post(UsersPath + "/Login", request);

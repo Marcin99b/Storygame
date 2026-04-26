@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Storygame.Client\Storygame.Client.csproj" />
     <ProjectReference Include="..\Storygame.Web\Storygame.Web.csproj" />
   </ItemGroup>
 

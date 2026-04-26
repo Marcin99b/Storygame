@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Storygame.Client;
 
 namespace Storygame.Tests.Integration;
 
@@ -17,5 +18,13 @@ public static class WebAppFactory
             });
 
         return factory.CreateClient();
+    }
+
+    public static StorygameClient CreateStorygameClient(Action<IServiceCollection>? customServices = null)
+        => CreateHttpClient(customServices).ToStorygameClient();
+
+    public static StorygameClient ToStorygameClient(this HttpClient httpClient)
+    {
+        return new StorygameClient(httpClient);
     }
 }
