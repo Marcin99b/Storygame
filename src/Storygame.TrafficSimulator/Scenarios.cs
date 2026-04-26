@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Storygame.Client;
 using Storygame.Contracts.WebApi;
 using Storygame.Contracts.WebApi.Dtos;
+using Storygame.Contracts.WebApi.Requests;
 
 public static class Scenarios
 {
