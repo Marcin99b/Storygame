@@ -1,31 +1,18 @@
-using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using Storygame.Client;
 using Storygame.Contracts.WebApi;
 using Storygame.Contracts.WebApi.Requests;
+using Storygame.Users;
 
 namespace Storygame.Tests.Integration.Client;
 
 [TestFixture]
 public class StorygameClientTests
 {
-    private WebApplicationFactory<Program> _factory = null!;
-
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
-    {
-        _factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => builder.UseSetting("environment", "Development"));
-    }
-
-    [OneTimeTearDown]
-    public void OneTimeTearDown() => _factory.Dispose();
-
-    private StorygameClient CreateClient()
-    {
-        var options = new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost") };
-        return _factory.CreateClient(options).ToStorygameClient();
-    }
+    private static StorygameClient CreateClient()
+        => WebAppFactory.CreateStorygameClient(services =>
+            services.AddSingleton<IUsersRepository>(new InMemoryUsersRepository()));
 
     [Test]
     public async Task Register_SetsXCsrfTokenInHeaders()
