@@ -44,8 +44,13 @@ public static class StorageModule
         services.AddSingleton<IUsersRepository, UsersRepository>();
     }
 
+    private static bool _initialized = false;
+
     public static void Initialize()
     {
+        if (_initialized) return;
+        _initialized = true;
+
         var pack = new ConventionPack
         {
             new CamelCaseElementNameConvention(),

@@ -9,15 +9,19 @@ public static class WebAppFactory
     public static HttpClient CreateHttpClient(Action<IServiceCollection>? customServices = null)
     {
         var factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => 
+            .WithWebHostBuilder(builder =>
             {
-                builder.ConfigureServices(services => 
+                builder.UseSetting("environment", "Development");
+                builder.ConfigureServices(services =>
                 {
                     customServices?.Invoke(services);
                 });
             });
 
-        return factory.CreateClient();
+        return factory.CreateClient(new WebApplicationFactoryClientOptions
+        {
+            BaseAddress = new Uri("https://localhost")
+        });
     }
 
     public static StorygameClient CreateStorygameClient(Action<IServiceCollection>? customServices = null)
