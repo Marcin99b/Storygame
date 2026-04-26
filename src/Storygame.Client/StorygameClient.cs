@@ -19,11 +19,11 @@ public class StorygameClient
     private const string MailPath = "/api/mail";
 
     private static readonly JsonSerializerOptions jsonOptions = CreateJsonOptions();
-    private readonly HttpClient client;
+    public HttpClient HttpClient { get; }
 
     public StorygameClient(Uri address, TimeSpan? customTimeout = null)
     {
-        client = new HttpClient()
+        HttpClient = new HttpClient()
         {
             BaseAddress = new UriBuilder(address.Scheme, address.Host, address.Port).Uri,
             Timeout = customTimeout ?? TimeSpan.FromSeconds(10),
@@ -32,7 +32,7 @@ public class StorygameClient
 
     public StorygameClient(HttpClient httpClient)
     {
-        client = httpClient;
+        HttpClient = httpClient;
     }
 
     public Task Login(LoginRequest request) 
@@ -73,7 +73,7 @@ public class StorygameClient
 
     private async Task<TResponse> Get<TResponse>(string url)
     {
-        var response = await client.GetAsync(url);
+        var response = await HttpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
         return (await response.Content.ReadFromJsonAsync<TResponse>(jsonOptions))!;
@@ -82,7 +82,7 @@ public class StorygameClient
     private async Task Post(string url)
     {
         await UpdateCSRF();
-        var response = await client.PostAsync(url, null);
+        var response = await HttpClient.PostAsync(url, null);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
     }
@@ -90,23 +90,23 @@ public class StorygameClient
     private async Task Post<TRequest>(string url, TRequest request)
     {
         await UpdateCSRF();
-        var response = await client.PostAsJsonAsync(url, request, jsonOptions);
+        var response = await HttpClient.PostAsJsonAsync(url, request, jsonOptions);
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
     }
 
     private async Task UpdateCSRF()
     {
-        var response = await client.GetAsync(UsersPath + "/CSRF");
+        var response = await HttpClient.GetAsync(UsersPath + "/CSRF");
         response.EnsureSuccessStatusCode();
         var token = await response.Content.ReadAsStringAsync();
 
-        if (client.DefaultRequestHeaders.Contains("X-CSRF-TOKEN"))
+        if (HttpClient.DefaultRequestHeaders.Contains("X-CSRF-TOKEN"))
         {
-            client.DefaultRequestHeaders.Remove("X-CSRF-TOKEN");
+            HttpClient.DefaultRequestHeaders.Remove("X-CSRF-TOKEN");
         }
 
-        client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", token);
+        HttpClient.DefaultRequestHeaders.Add("X-CSRF-TOKEN", token);
     }
 
     private void TryUpdateCookie(HttpResponseMessage response)
@@ -118,12 +118,12 @@ public class StorygameClient
 
         var cookie = cookies.Single();
 
-        if (client.DefaultRequestHeaders.Contains(HeaderNames.Cookie))
+        if (HttpClient.DefaultRequestHeaders.Contains(HeaderNames.Cookie))
         {
-            client.DefaultRequestHeaders.Remove(HeaderNames.Cookie);
+            HttpClient.DefaultRequestHeaders.Remove(HeaderNames.Cookie);
         }
 
-        client.DefaultRequestHeaders.Add(HeaderNames.Cookie, cookie);
+        HttpClient.DefaultRequestHeaders.Add(HeaderNames.Cookie, cookie);
     }
 
     private static JsonSerializerOptions CreateJsonOptions()
