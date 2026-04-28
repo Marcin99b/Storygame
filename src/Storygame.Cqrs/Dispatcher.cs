@@ -6,7 +6,7 @@ namespace Storygame.Cqrs;
 
 public sealed class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatcher> logger) : IDispatcher
 {
-    public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query) 
+    public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query)
         where TQuery : IQuery<TResult>
     {
         using var scope = serviceProvider.CreateScope();
@@ -17,7 +17,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatc
         return handler.HandleAsync(query);
     }
 
-    public Task SendAsync<TCommand>(TCommand command) 
+    public Task SendAsync<TCommand>(TCommand command)
         where TCommand : ICommand
     {
         using var scope = serviceProvider.CreateScope();
