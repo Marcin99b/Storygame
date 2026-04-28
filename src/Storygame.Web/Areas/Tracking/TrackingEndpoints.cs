@@ -7,7 +7,7 @@ using Storygame.Ownership;
 using Storygame.Tracking.Commands;
 using Storygame.Tracking.Queries;
 using Storygame.Web.Auth;
-using Storygame.Web.Extencions;
+using Storygame.Web.Extensions;
 
 namespace Storygame.Web.Areas.Tracking;
 

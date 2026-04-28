@@ -5,7 +5,7 @@ using Storygame.Contracts.WebApi.Responses;
 using Storygame.Library.Queries;
 using Storygame.Tracking.Queries;
 
-namespace Storygame.Web.Extencions;
+namespace Storygame.Web.Extensions;
 
 public static class DtoExtensions
 {

@@ -6,7 +6,7 @@ using Storygame.Cqrs;
 using Storygame.Library.Commands;
 using Storygame.Library.Queries;
 using Storygame.Web.Auth;
-using Storygame.Web.Extencions;
+using Storygame.Web.Extensions;
 
 namespace Storygame.Web.Areas.Library;
 
