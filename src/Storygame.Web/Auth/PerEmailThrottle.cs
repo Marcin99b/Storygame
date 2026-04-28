@@ -5,7 +5,7 @@ namespace Storygame.Web.Auth;
 public class PerEmailThrottle
 {
     private readonly IMemoryCache cache;
-    private readonly TimeSpan window = TimeSpan.FromMinutes(1);
+    private readonly TimeSpan window = TimeSpan.FromSeconds(15);
 
     public PerEmailThrottle(IMemoryCache cache) => this.cache = cache;
 
