@@ -10,15 +10,15 @@ public record VerifyUserCommand(string Email, string VerificationCode) : IComman
 
 public class VerifyUserCommandHandler(IUsersRepository usersRepository, IDispatcher dispatcher) : ICommandHandler<VerifyUserCommand>
 {
-    public async Task HandleAsync(VerifyUserCommand command)
+    public async Task HandleAsync(VerifyUserCommand command, CancellationToken ct)
     {
-        var user = await usersRepository.GetUserByEmail(command.Email);
+        var user = await usersRepository.GetUserByEmail(command.Email, ct);
         if (user.IsVerified)
         {
             throw new ArgumentException($"User is already verified");
         }
 
-        var verificationCode = await usersRepository.GetUserVerificationCode(user.Id);
+        var verificationCode = await usersRepository.GetUserVerificationCode(user.Id, ct);
 
         if (command.VerificationCode != verificationCode.Code)
         {
@@ -26,8 +26,8 @@ public class VerifyUserCommandHandler(IUsersRepository usersRepository, IDispatc
         }
 
         user.VerifiedAt = DateTime.UtcNow;
-        await usersRepository.UpdateUser(user);
+        await usersRepository.UpdateUser(user, ct);
 
-        await dispatcher.PublishAsync(UserVerifiedEvent.FromUser(user));
+        await dispatcher.PublishAsync(UserVerifiedEvent.FromUser(user), ct);
     }
 }

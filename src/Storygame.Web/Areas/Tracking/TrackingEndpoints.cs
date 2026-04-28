@@ -27,24 +27,24 @@ public static class TrackingEndpoints
         return app;
     }
 
-    public static async Task<GetTrackingsResponse> GetTrackings(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context)
+    public static async Task<GetTrackingsResponse> GetTrackings(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, CancellationToken ct)
     {
         var session = sessionProvider.GetSession(context);
-        var result = await dispatcher.QueryAsync<GetUserTrackingsQuery, GetUserTrackingsQueryResult>(new GetUserTrackingsQuery(session.UserId));
+        var result = await dispatcher.QueryAsync<GetUserTrackingsQuery, GetUserTrackingsQueryResult>(new GetUserTrackingsQuery(session.UserId), ct);
         return result.ToResponse();
     }
 
-    public static async Task StartTracking(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, [FromBody] StartTrackingRequest request)
+    public static async Task StartTracking(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, [FromBody] StartTrackingRequest request, CancellationToken ct)
     {
         var session = sessionProvider.GetSession(context);
-        var book = (await dispatcher.QueryAsync<GetLibraryBookByIdQuery, GetLibraryBookByIdQueryResult>(new GetLibraryBookByIdQuery(request.LibraryBookId, session.UserId))).Book;
+        var book = (await dispatcher.QueryAsync<GetLibraryBookByIdQuery, GetLibraryBookByIdQueryResult>(new GetLibraryBookByIdQuery(request.LibraryBookId, session.UserId), ct)).Book;
         book.ThrowIfNotOwner(session.UserId);
-        await dispatcher.SendAsync(new StartTrackingBookCommand(request.LibraryBookId, session.UserId, book.Length));
+        await dispatcher.SendAsync(new StartTrackingBookCommand(request.LibraryBookId, session.UserId, book.Length), ct);
     }
 
-    public static Task UpdateIndex(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, [FromRoute] Guid trackingId, [FromBody] UpdateIndexRequest request)
+    public static Task UpdateIndex(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, [FromRoute] Guid trackingId, [FromBody] UpdateIndexRequest request, CancellationToken ct)
     {
         var session = sessionProvider.GetSession(context);
-        return dispatcher.SendAsync(new UpdateTrackingIndexCommand(session.UserId, trackingId, request.NewIndex));
+        return dispatcher.SendAsync(new UpdateTrackingIndexCommand(session.UserId, trackingId, request.NewIndex), ct);
     }
 }

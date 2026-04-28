@@ -12,9 +12,9 @@ public record RegisterUserCommand(string Name, string Email) : ICommand;
 
 public class RegisterUserCommandHandler(IUsersRepository usersRepository, EmailClient emailClient, IDispatcher dispatcher) : ICommandHandler<RegisterUserCommand>
 {
-    public async Task HandleAsync(RegisterUserCommand command)
+    public async Task HandleAsync(RegisterUserCommand command, CancellationToken ct)
     {
-        if (await usersRepository.CheckIfEmailExist(command.Email))
+        if (await usersRepository.CheckIfEmailExist(command.Email, ct))
         {
             throw new ArgumentException($"User is already registered");
         }
@@ -28,13 +28,13 @@ public class RegisterUserCommandHandler(IUsersRepository usersRepository, EmailC
             VerifiedAt = null,
         };
 
-        await usersRepository.AddUser(user);
+        await usersRepository.AddUser(user, ct);
 
         var code = RandomNumberGenerator.GetHexString(48).ToUpper();
         var verificationCode = new UserVerificationCode(Guid.NewGuid(), user.Id, code);
-        await usersRepository.SaveUserVerificationCode(verificationCode);
+        await usersRepository.SaveUserVerificationCode(verificationCode, ct);
         await emailClient.Send(new MailMessage(user.Email, "Verification code", code, DateTime.UtcNow));
 
-        await dispatcher.PublishAsync(UserRegisteredEvent.FromUser(user));
+        await dispatcher.PublishAsync(UserRegisteredEvent.FromUser(user), ct);
     }
 }

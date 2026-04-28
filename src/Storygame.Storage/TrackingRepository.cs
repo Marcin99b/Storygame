@@ -8,16 +8,16 @@ public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
 {
     private readonly IMongoCollection<Tracking.Tracking> trackings = database.GetCollection<Tracking.Tracking>(DbCollectionNames.TRACKING);
 
-    public Task AddTracking(Tracking.Tracking tracking) => trackings.InsertOneAsync(tracking);
+    public Task AddTracking(Tracking.Tracking tracking, CancellationToken ct) => trackings.InsertOneAsync(tracking, null, ct);
 
-    public async Task UpdateTracking(Tracking.Tracking tracking) => await trackings.ReplaceOneAsync(x => x.Id == tracking.Id, tracking);
+    public async Task UpdateTracking(Tracking.Tracking tracking, CancellationToken ct) => await trackings.ReplaceOneAsync(x => x.Id == tracking.Id, tracking, cancellationToken: ct);
 
-    public async Task<bool> CheckIfBookIsAlreadyTracked(Guid libraryBookId) => (await trackings.CountDocumentsAsync(x => x.LibraryBookId == libraryBookId)) > 0;
+    public async Task<bool> CheckIfBookIsAlreadyTracked(Guid libraryBookId, CancellationToken ct) => (await trackings.CountDocumentsAsync(x => x.LibraryBookId == libraryBookId, null, ct)) > 0;
 
-    public async Task<IEnumerable<Tracking.Tracking>> GetUserTrackings(Guid userId)
+    public async Task<IEnumerable<Tracking.Tracking>> GetUserTrackings(Guid userId, CancellationToken ct)
     {
-        return await trackings.AsQueryable().Where(x => x.UserId == userId).ToListAsync();
+        return await trackings.AsQueryable().Where(x => x.UserId == userId).ToListAsync(ct);
     }
 
-    public Task<Tracking.Tracking> GetTracking(Guid trackingId) => trackings.AsQueryable().FirstAsync(x => x.Id == trackingId);
+    public Task<Tracking.Tracking> GetTracking(Guid trackingId, CancellationToken ct) => trackings.AsQueryable().FirstAsync(x => x.Id == trackingId, ct);
 }

@@ -41,15 +41,15 @@ public static class UsersEndpoints
         return app;
     }
 
-    public static async Task<MeResponse> GetMe(IDispatcher dispatcher, HttpContext http, UserSessionProvider sessionProvider)
+    public static async Task<MeResponse> GetMe(IDispatcher dispatcher, HttpContext http, UserSessionProvider sessionProvider, CancellationToken ct)
     {
         var session = sessionProvider.GetSession(http);
-        var user = (await dispatcher.QueryAsync<GetUserByIdQuery, GetUserByIdQueryResult>(new GetUserByIdQuery(session.UserId))).User;
+        var user = (await dispatcher.QueryAsync<GetUserByIdQuery, GetUserByIdQueryResult>(new GetUserByIdQuery(session.UserId), ct)).User;
 
         return new MeResponse(user.Name);
     }
 
-    public static async Task Register(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, [FromBody] RegisterRequest request)
+    public static async Task Register(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, [FromBody] RegisterRequest request, CancellationToken ct)
     {
         if (!throttle.TryAcquire(nameof(Register), request.Email))
         {
@@ -58,10 +58,10 @@ public static class UsersEndpoints
         }
 
         var command = new RegisterUserCommand(request.Name, request.Email);
-        await dispatcher.SendAsync(command);
+        await dispatcher.SendAsync(command, ct);
     }
 
-    public static async Task Verify(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, [FromBody] VerifyUserRequest request)
+    public static async Task Verify(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, [FromBody] VerifyUserRequest request, CancellationToken ct)
     {
         if (!throttle.TryAcquire(nameof(Verify), request.Email))
         {
@@ -70,10 +70,10 @@ public static class UsersEndpoints
         }
 
         var command = new VerifyUserCommand(request.Email, request.VerificationCode);
-        await dispatcher.SendAsync(command);
+        await dispatcher.SendAsync(command, ct);
     }
 
-    public static async Task Login(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, SessionStorage sessionStorage, EmailClient emailClient, [FromBody] LoginRequest request)
+    public static async Task Login(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, SessionStorage sessionStorage, EmailClient emailClient, [FromBody] LoginRequest request, CancellationToken ct)
     {
         if (!throttle.TryAcquire(nameof(Login), request.Email))
         {
@@ -81,7 +81,7 @@ public static class UsersEndpoints
             return;
         }
 
-        var user = (await dispatcher.QueryAsync<GetUserByEmailQuery, GetUserByEmailQueryResult>(new GetUserByEmailQuery(request.Email))).User;
+        var user = (await dispatcher.QueryAsync<GetUserByEmailQuery, GetUserByEmailQueryResult>(new GetUserByEmailQuery(request.Email), ct)).User;
         if (!user.IsVerified)
         {
             throw new ArgumentException($"User {user.Id} is not verified");
@@ -91,8 +91,9 @@ public static class UsersEndpoints
         await emailClient.Send(new MailMessage(user.Email, "Login confirmation", confirmationKey, DateTime.UtcNow));
     }
 
-    public static async Task ConfirmLogin(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromBody] ConfirmLoginRequest request)
+    public static async Task ConfirmLogin(IDispatcher dispatcher, HttpContext http, SessionStorage sessionStorage, [FromBody] ConfirmLoginRequest request, CancellationToken ct)
     {
+        ct.ThrowIfCancellationRequested();
         var sessionKey = sessionStorage.ConfirmSession(request.LoginConfirmationKey, http);
 
         var claims = new List<Claim>
@@ -106,8 +107,9 @@ public static class UsersEndpoints
         await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
     }
 
-    public static Task Logout(HttpContext http, UserSessionProvider sessionProvider)
+    public static Task Logout(HttpContext http, UserSessionProvider sessionProvider, CancellationToken ct)
     {
+        ct.ThrowIfCancellationRequested();
         sessionProvider.Logout();
         return http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }

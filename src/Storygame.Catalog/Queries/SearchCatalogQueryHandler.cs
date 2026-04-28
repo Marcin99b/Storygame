@@ -130,8 +130,10 @@ public class SearchCatalogQueryHandler : IQueryHandler<SearchCatalogQuery, Searc
         }
     };
 
-    public Task<SearchCatalogQueryResult> HandleAsync(SearchCatalogQuery query)
+    public Task<SearchCatalogQueryResult> HandleAsync(SearchCatalogQuery query, CancellationToken ct)
     {
+        ct.ThrowIfCancellationRequested();
+
         var filtered = memoryBooks;
         if (query.TitleContains != null)
         {

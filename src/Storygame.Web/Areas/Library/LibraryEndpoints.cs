@@ -25,16 +25,16 @@ public static class LibraryEndpoints
         return app;
     }
 
-    public static async Task<GetLibraryResponse> GetLibrary(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context)
+    public static async Task<GetLibraryResponse> GetLibrary(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, CancellationToken ct)
     {
         var session = sessionProvider.GetSession(context);
-        var result = await dispatcher.QueryAsync<GetUserBooksFromLibraryQuery, GetUserBooksFromLibraryQueryResult>(new GetUserBooksFromLibraryQuery(session.UserId));
+        var result = await dispatcher.QueryAsync<GetUserBooksFromLibraryQuery, GetUserBooksFromLibraryQueryResult>(new GetUserBooksFromLibraryQuery(session.UserId), ct);
         return result.ToResponse();
     }
 
-    public static Task AddToLibrary(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, [FromBody] AddToLibraryRequest request)
+    public static Task AddToLibrary(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, [FromBody] AddToLibraryRequest request, CancellationToken ct)
     {
         var session = sessionProvider.GetSession(context);
-        return dispatcher.SendAsync(new AddBookToLibraryCommand(session.UserId, request.CatalogBookId, request.ImageId, request.Title, request.Description, (Storygame.Library.MediaType)request.MediaType, request.Length));
+        return dispatcher.SendAsync(new AddBookToLibraryCommand(session.UserId, request.CatalogBookId, request.ImageId, request.Title, request.Description, (Storygame.Library.MediaType)request.MediaType, request.Length), ct);
     }
 }

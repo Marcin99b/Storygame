@@ -11,14 +11,14 @@ public record UpdateTrackingIndexCommand(Guid UserId, Guid TrackingId, int NewIn
 
 public class UpdateTrackingIndexCommandHandler(ITrackingRepository trackingRepository, IDispatcher dispatcher) : ICommandHandler<UpdateTrackingIndexCommand>
 {
-    public async Task HandleAsync(UpdateTrackingIndexCommand command)
+    public async Task HandleAsync(UpdateTrackingIndexCommand command, CancellationToken ct)
     {
-        var tracking = await trackingRepository.GetTracking(command.TrackingId);
+        var tracking = await trackingRepository.GetTracking(command.TrackingId, ct);
         tracking.ThrowIfNotOwner(command.UserId);
 
         tracking.CurrentIndex = command.NewIndex;
-        await trackingRepository.UpdateTracking(tracking);
+        await trackingRepository.UpdateTracking(tracking, ct);
 
-        await dispatcher.PublishAsync(TrackingIndexUpdatedEvent.FromTracking(tracking));
+        await dispatcher.PublishAsync(TrackingIndexUpdatedEvent.FromTracking(tracking), ct);
     }
 }

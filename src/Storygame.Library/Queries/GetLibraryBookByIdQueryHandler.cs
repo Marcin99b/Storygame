@@ -10,9 +10,9 @@ public record GetLibraryBookByIdQueryResult(Book Book);
 
 public class GetLibraryBookByIdQueryHandler(ILibraryRepository libraryRepository) : IQueryHandler<GetLibraryBookByIdQuery, GetLibraryBookByIdQueryResult>
 {
-    public async Task<GetLibraryBookByIdQueryResult> HandleAsync(GetLibraryBookByIdQuery query)
+    public async Task<GetLibraryBookByIdQueryResult> HandleAsync(GetLibraryBookByIdQuery query, CancellationToken ct)
     {
-        var book = await libraryRepository.GetBookById(query.LibraryBookId, query.UserId);
+        var book = await libraryRepository.GetBookById(query.LibraryBookId, query.UserId, ct);
         return new GetLibraryBookByIdQueryResult(book);
     }
 }

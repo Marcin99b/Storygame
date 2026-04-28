@@ -21,9 +21,9 @@ public static class CatalogEndpoints
         return app;
     }
 
-    public static async Task<GetCatalogResponse> GetCatalog(IDispatcher dispatcher, [FromQuery] string? titleContains, [FromQuery] bool? hasTextEdition, [FromQuery] bool? hasAudiobook)
+    public static async Task<GetCatalogResponse> GetCatalog(IDispatcher dispatcher, [FromQuery] string? titleContains, [FromQuery] bool? hasTextEdition, [FromQuery] bool? hasAudiobook, CancellationToken ct)
     {
-        var result = await dispatcher.QueryAsync<SearchCatalogQuery, SearchCatalogQueryResult>(new SearchCatalogQuery(titleContains, hasTextEdition, hasAudiobook));
+        var result = await dispatcher.QueryAsync<SearchCatalogQuery, SearchCatalogQueryResult>(new SearchCatalogQuery(titleContains, hasTextEdition, hasAudiobook), ct);
         return result.ToResponse();
     }
 }

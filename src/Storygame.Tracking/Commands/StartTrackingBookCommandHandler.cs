@@ -10,9 +10,9 @@ public record StartTrackingBookCommand(Guid LibraryBookId, Guid UserId, int Tota
 
 public class StartTrackingBookCommandHandler(ITrackingRepository trackingRepository, IDispatcher dispatcher) : ICommandHandler<StartTrackingBookCommand>
 {
-    public async Task HandleAsync(StartTrackingBookCommand command)
+    public async Task HandleAsync(StartTrackingBookCommand command, CancellationToken ct)
     {
-        if (await trackingRepository.CheckIfBookIsAlreadyTracked(command.LibraryBookId))
+        if (await trackingRepository.CheckIfBookIsAlreadyTracked(command.LibraryBookId, ct))
         {
             throw new ArgumentException($"Book {command.LibraryBookId} is already tracked");
         }
@@ -26,8 +26,8 @@ public class StartTrackingBookCommandHandler(ITrackingRepository trackingReposit
             TotalLength = command.TotalLength
         };
 
-        await trackingRepository.AddTracking(tracking);
+        await trackingRepository.AddTracking(tracking, ct);
 
-        await dispatcher.PublishAsync(TrackingStartedEvent.FromTracking(tracking));
+        await dispatcher.PublishAsync(TrackingStartedEvent.FromTracking(tracking), ct);
     }
 }

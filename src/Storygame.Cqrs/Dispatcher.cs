@@ -6,37 +6,38 @@ namespace Storygame.Cqrs;
 
 public sealed class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatcher> logger) : IDispatcher
 {
-    public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query)
+    public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query, CancellationToken ct)
         where TQuery : IQuery<TResult>
     {
-        using var scope = serviceProvider.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
+        ct.ThrowIfCancellationRequested();
+        var handler = serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
 
         logger.ExecutingQuery(typeof(TQuery).Name);
 
-        return handler.HandleAsync(query);
+        return handler.HandleAsync(query, ct);
     }
 
-    public Task SendAsync<TCommand>(TCommand command)
+    public Task SendAsync<TCommand>(TCommand command, CancellationToken ct)
         where TCommand : ICommand
     {
-        using var scope = serviceProvider.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<TCommand>>();
+        ct.ThrowIfCancellationRequested();
+        var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
 
         logger.ExecutingCommand(typeof(TCommand).Name);
 
-        return handler.HandleAsync(command);
+        return handler.HandleAsync(command, ct);
     }
 
-    public Task PublishAsync<TEvent>(TEvent @event)
+    public Task PublishAsync<TEvent>(TEvent @event, CancellationToken ct)
         where TEvent : IEvent
     {
-        using var scope = serviceProvider.CreateScope();
-        var handlers = scope.ServiceProvider.GetServices<IEventHandler<TEvent>>()!;
+        ct.ThrowIfCancellationRequested();
+        var handlers = serviceProvider.GetServices<IEventHandler<TEvent>>()!;
 
         logger.PublishingEvent(typeof(TEvent).Name);
-
-        var tasks = handlers.Select(x => x.HandleAsync(@event));
+        // todo what if cancellation token stopped when some event handlers are executed and saved something to DB?
+        // there should be something like transaction or inbox pattern
+        var tasks = handlers.Select(x => x.HandleAsync(@event, ct));
         return Task.WhenAll(tasks);
     }
 }

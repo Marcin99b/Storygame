@@ -11,9 +11,9 @@ public record GetUserTrackingsQueryResult(IEnumerable<Tracking> Trackings);
 
 public class GetUserTrackingsQueryHandler(ITrackingRepository trackingRepository) : IQueryHandler<GetUserTrackingsQuery, GetUserTrackingsQueryResult>
 {
-    public async Task<GetUserTrackingsQueryResult> HandleAsync(GetUserTrackingsQuery query)
+    public async Task<GetUserTrackingsQueryResult> HandleAsync(GetUserTrackingsQuery query, CancellationToken ct)
     {
-        var trackings = await trackingRepository.GetUserTrackings(query.UserId);
+        var trackings = await trackingRepository.GetUserTrackings(query.UserId, ct);
         return new GetUserTrackingsQueryResult(trackings);
     }
 }

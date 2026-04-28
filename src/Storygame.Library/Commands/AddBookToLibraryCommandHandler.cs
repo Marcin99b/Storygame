@@ -10,10 +10,10 @@ public record AddBookToLibraryCommand(Guid UserId, Guid? CatalogBookId, Guid? Im
 
 public class AddBookToLibraryCommandHandler(ILibraryRepository libraryRepository, IDispatcher dispatcher) : ICommandHandler<AddBookToLibraryCommand>
 {
-    public async Task HandleAsync(AddBookToLibraryCommand command)
+    public async Task HandleAsync(AddBookToLibraryCommand command, CancellationToken ct)
     {
         var alreadyExist = command.CatalogBookId.HasValue 
-            && await libraryRepository.CheckIfUserAlreadyHasThisBook(command.UserId, command.CatalogBookId.Value, command.MediaType);
+            && await libraryRepository.CheckIfUserAlreadyHasThisBook(command.UserId, command.CatalogBookId.Value, command.MediaType, ct);
         if (alreadyExist)
         {
             throw new ArgumentException($"User already has book: {command.CatalogBookId!.Value} with media type: {command.MediaType.ToString()}");
@@ -32,8 +32,8 @@ public class AddBookToLibraryCommandHandler(ILibraryRepository libraryRepository
             AddedToLibraryAt = DateTime.UtcNow
         };
 
-        await libraryRepository.AddBook(book);
+        await libraryRepository.AddBook(book, ct);
 
-        await dispatcher.PublishAsync(BookAddedToLibraryEvent.FromBook(book));
+        await dispatcher.PublishAsync(BookAddedToLibraryEvent.FromBook(book), ct);
     }
 }
