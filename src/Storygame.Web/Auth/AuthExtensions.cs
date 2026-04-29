@@ -63,9 +63,8 @@ public static class AuthExtensions
         services.AddSingleton<SessionStorage>();
         services.AddScoped<UserSessionProvider>();
 
-        services.AddAuthorization(options => 
-        {
-            options.AddPolicy(ActionIsRequestedByUserPolicy, policy => 
+        services.AddAuthorizationBuilder()
+            .AddPolicy(ActionIsRequestedByUserPolicy, policy => 
             {
                 policy.RequireAssertion(policyContext => 
                 {
@@ -93,7 +92,6 @@ public static class AuthExtensions
                     }
                 });
             });
-        });
     }
 
     public static void ConfigureSetSession(this WebApplication app)
