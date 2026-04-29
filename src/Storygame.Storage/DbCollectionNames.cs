@@ -7,4 +7,5 @@ public static class DbCollectionNames
     public const string TRACKING = "Tracking";
     public const string USERS = "Users";
     public const string USERS_VERIFICATION_CODES = "UsersVerificationCodes";
+    public const string EVENTS_PREFIX = "Events_";
 }

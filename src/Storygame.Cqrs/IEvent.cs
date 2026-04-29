@@ -1,3 +1,6 @@
 ﻿namespace Storygame.Cqrs;
 
-public interface IEvent;
+public interface IEvent
+{
+    Guid EventId { get; }
+}
