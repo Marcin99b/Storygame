@@ -29,7 +29,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatc
     }
 
     public Task PublishAsync<TEvent>(TEvent @event, CancellationToken ct)
-        where TEvent : IEvent
+        where TEvent : Event
     {
         ct.ThrowIfCancellationRequested();
         var handlers = serviceProvider.GetServices<IEventHandler<TEvent>>()!;

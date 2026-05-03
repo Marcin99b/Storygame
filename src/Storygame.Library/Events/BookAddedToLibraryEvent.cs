@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Storygame.Library.Events;
 
-public record BookAddedToLibraryEvent(Guid LibraryBookId, Guid UserId, Guid? CatalogBookId, Guid? ImageId, string Title, string Description, int Length, MediaType MediaType, DateTime AddedToLibraryAt) : IEvent
+public record BookAddedToLibraryEvent(Guid LibraryBookId, Guid UserId, Guid? CatalogBookId, Guid? ImageId, string Title, string Description, int Length, MediaType MediaType, DateTime AddedToLibraryAt) : Event
 {
     public Guid EventId { get; } = Guid.NewGuid();
 

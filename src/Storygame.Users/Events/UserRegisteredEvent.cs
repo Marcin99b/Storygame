@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Storygame.Users.Events;
 
-public record UserRegisteredEvent(Guid UserId, string Name, string Email, DateTime RegisteredAt) : IEvent
+public record UserRegisteredEvent(Guid UserId, string Name, string Email, DateTime RegisteredAt) : Event
 {
     public Guid EventId { get; } = Guid.NewGuid();
 

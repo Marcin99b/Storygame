@@ -2,7 +2,7 @@
 
 namespace Storygame.Users.Events;
 
-public record UserVerifiedEvent(Guid UserId, DateTime VerifiedAt) : IEvent
+public record UserVerifiedEvent(Guid UserId, DateTime VerifiedAt) : Event
 {
     public Guid EventId { get; } = Guid.NewGuid();
 

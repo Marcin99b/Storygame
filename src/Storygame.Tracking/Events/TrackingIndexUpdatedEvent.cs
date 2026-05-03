@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Storygame.Tracking.Events;
 
-public record TrackingIndexUpdatedEvent(Guid TrackingId, int NewIndex) : IEvent
+public record TrackingIndexUpdatedEvent(Guid TrackingId, int NewIndex) : Event
 {
     public Guid EventId { get; } = Guid.NewGuid();
 
