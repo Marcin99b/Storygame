@@ -33,6 +33,18 @@ public class EventsRepository(IMongoDatabase database)
         return await collection.AsQueryable().OrderByDescending(x => x.CreatedAt).Skip(offset).Take(count).ToListAsync(ct);
     }
 
+    //todo speed up
+    public async Task<T?> Next<T>(Guid previousId, CancellationToken ct)
+        where T : Event
+    {
+        var collection = GetCollection<T>();
+        var queryable = collection.AsQueryable();
+        var indexes = queryable.Select((item, index) => new { Item = item, Index = index });
+        var index = (await indexes.FirstAsync(x => x.Item.EventId == previousId, ct)).Index;
+        var next = await indexes.FirstOrDefaultAsync(x => x.Index == index + 1, cancellationToken: ct);
+        return next?.Item;
+    }
+
     private IMongoCollection<T> GetCollection<T>() 
         where T : Event
     {
