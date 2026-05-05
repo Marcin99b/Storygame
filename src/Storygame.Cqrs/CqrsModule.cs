@@ -11,6 +11,9 @@ public static class CqrsModule
     {
         services.AddSingleton<IDispatcher, Dispatcher>();
 
+        //todo if handlers doesn't use request specific data, then it could be changed to singletons
+        //todo - decide when there will be any performance problems
+
         services.Scan(scan => scan
             .FromApplicationDependencies()
             .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
