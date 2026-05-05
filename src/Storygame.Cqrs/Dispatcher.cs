@@ -10,7 +10,8 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatc
         where TQuery : IQuery<TResult>
     {
         ct.ThrowIfCancellationRequested();
-        var handler = serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
+        using var scope = serviceProvider.CreateScope();
+        var handler = scope.ServiceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
 
         logger.ExecutingQuery(typeof(TQuery).Name);
 
@@ -21,7 +22,8 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatc
         where TCommand : ICommand
     {
         ct.ThrowIfCancellationRequested();
-        var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
+        using var scope = serviceProvider.CreateScope();
+        var handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<TCommand>>();
 
         logger.ExecutingCommand(typeof(TCommand).Name);
 
@@ -32,7 +34,8 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, ILogger<Dispatc
         where TEvent : Event
     {
         ct.ThrowIfCancellationRequested();
-        var handlers = serviceProvider.GetServices<IEventHandler<TEvent>>()!;
+        using var scope = serviceProvider.CreateScope();
+        var handlers = scope.ServiceProvider.GetServices<IEventHandler<TEvent>>()!;
 
         logger.PublishingEvent(typeof(TEvent).Name);
         // todo what if cancellation token stopped when some event handlers are executed and saved something to DB?

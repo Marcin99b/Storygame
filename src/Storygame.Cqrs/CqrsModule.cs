@@ -10,6 +10,7 @@ public static class CqrsModule
     public static void RegisterCqrs(this IServiceCollection services)
     {
         services.AddSingleton<IDispatcher, Dispatcher>();
+
         services.Scan(scan => scan
             .FromApplicationDependencies()
             .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))

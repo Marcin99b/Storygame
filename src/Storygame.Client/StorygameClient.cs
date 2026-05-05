@@ -91,6 +91,7 @@ public class StorygameClient
     {
         await UpdateCSRF();
         var response = await HttpClient.PostAsJsonAsync(url, request, jsonOptions);
+        var text = await response.Content.ReadAsStringAsync();
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
     }
