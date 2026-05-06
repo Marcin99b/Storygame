@@ -22,15 +22,14 @@ public static class UsersEndpoints
     {
         var group = app.MapGroup("/api/users").WithTags("Users")
             .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
-            .RequireRateLimiting("AuthRateLimiter")
             .ValidateAntiforgery();
 
-        group.MapGet("/Me", GetMe);
-        group.MapPost("/Register", Register).AllowAnonymous();
-        group.MapPost("/Verify", Verify).AllowAnonymous();
-        group.MapPost("/Login", Login).AllowAnonymous();
-        group.MapPost("/ConfirmLogin", ConfirmLogin).AllowAnonymous();
-        group.MapPost("/Logout", Logout);
+        group.MapGet("/Me", GetMe).RequireRateLimiting("MainRateLimiter");
+        group.MapPost("/Register", Register).AllowAnonymous().RequireRateLimiting("AuthRateLimiter");
+        group.MapPost("/Verify", Verify).AllowAnonymous().RequireRateLimiting("AuthRateLimiter");
+        group.MapPost("/Login", Login).AllowAnonymous().RequireRateLimiting("AuthRateLimiter");
+        group.MapPost("/ConfirmLogin", ConfirmLogin).AllowAnonymous().RequireRateLimiting("AuthRateLimiter");
+        group.MapPost("/Logout", Logout).RequireRateLimiting("AuthRateLimiter");
 
         group.MapGet("/CSRF", (IAntiforgery forgery, HttpContext ctx) =>
         {
