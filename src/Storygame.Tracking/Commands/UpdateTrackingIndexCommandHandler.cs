@@ -15,10 +15,11 @@ public class UpdateTrackingIndexCommandHandler(ITrackingRepository trackingRepos
     {
         var tracking = await trackingRepository.GetTracking(command.TrackingId, ct);
         tracking.ThrowIfNotOwner(command.UserId);
+        var oldIndex = tracking.CurrentIndex;
 
         tracking.CurrentIndex = command.NewIndex;
         await trackingRepository.UpdateTracking(tracking, ct);
 
-        await dispatcher.PublishAsync(TrackingIndexUpdatedEvent.FromTracking(tracking), ct);
+        await dispatcher.PublishAsync(TrackingIndexUpdatedEvent.FromTracking(tracking, oldIndex), ct);
     }
 }
