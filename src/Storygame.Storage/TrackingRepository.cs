@@ -34,6 +34,6 @@ public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
         return await trackingsStatistics
             .AsQueryable()
             .Where(x => x.TimePeriod == timePeriod && x.TimeRange.From >= timeRange.From && x.TimeRange.To <= timeRange.To)
-            .ToListAsync();
+            .ToListAsync(ct);
     }
 }
