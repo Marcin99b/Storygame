@@ -7,4 +7,5 @@ public class TrackingStatistic
     public required Guid TrackingId { get; set; }
     public required TimePeriod TimePeriod { get; set; }
     public required TimeRange TimeRange { get; set; }
+    public required int Value { get; set; }
 }
