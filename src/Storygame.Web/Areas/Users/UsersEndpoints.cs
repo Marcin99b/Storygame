@@ -12,7 +12,6 @@ using Storygame.Users.Commands;
 using Storygame.Users.Queries;
 using Storygame.Web.Auth;
 using System.Security.Claims;
-using static System.Net.WebRequestMethods;
 
 namespace Storygame.Web.Areas.Users;
 
