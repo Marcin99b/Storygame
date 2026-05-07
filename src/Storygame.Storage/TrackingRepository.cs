@@ -29,11 +29,17 @@ public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
     public async Task UpdateStatistic(TrackingStatistic trackingStatistic, CancellationToken ct) 
         => await trackingsStatistics.ReplaceOneAsync(x => x.Id == trackingStatistic.Id, trackingStatistic, cancellationToken: ct);
 
-    public async Task<IEnumerable<TrackingStatistic>> GetStatistics(TimeRange timeRange, TimePeriod timePeriod, CancellationToken ct)
+    public async Task<IEnumerable<TrackingStatistic>> GetStatistics(Guid trackingId, TimeRange timeRange, TimePeriod timePeriod, CancellationToken ct)
     {
         return await trackingsStatistics
             .AsQueryable()
-            .Where(x => x.TimePeriod == timePeriod && x.TimeRange.From >= timeRange.From && x.TimeRange.To <= timeRange.To)
+            .Where(x => x.TrackingId == trackingId && x.TimePeriod == timePeriod && x.TimeRange.From >= timeRange.From && x.TimeRange.To <= timeRange.To)
             .ToListAsync(ct);
+    }
+
+    public async Task<TrackingStatistic?> GetStatisticByTimePoint(Guid trackingId, DateTime timePoint, TimePeriod timePeriod, CancellationToken ct)
+    {
+        return await trackingsStatistics
+            .AsQueryable().FirstOrDefaultAsync(x => x.TrackingId == trackingId && x.TimePeriod == timePeriod && x.TimeRange.From >= timePoint && x.TimeRange.To <= timePoint, ct);
     }
 }
