@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using DnsClient;
+using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Storygame.Tracking;
 
@@ -7,6 +8,7 @@ namespace Storygame.Storage;
 public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
 {
     private readonly IMongoCollection<Tracking.Tracking> trackings = database.GetCollection<Tracking.Tracking>(DbCollectionNames.TRACKING);
+    private readonly IMongoCollection<Tracking.TrackingStatistic> trackingsStatistics = database.GetCollection<Tracking.TrackingStatistic>(DbCollectionNames.TRACKING_STATISTICS);
 
     public Task AddTracking(Tracking.Tracking tracking, CancellationToken ct) => trackings.InsertOneAsync(tracking, null, ct);
 
@@ -20,4 +22,18 @@ public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
     }
 
     public Task<Tracking.Tracking> GetTracking(Guid trackingId, CancellationToken ct) => trackings.AsQueryable().FirstAsync(x => x.Id == trackingId, ct);
+
+    public Task AddStatistic(TrackingStatistic trackingStatistic, CancellationToken ct)
+        => trackingsStatistics.InsertOneAsync(trackingStatistic, null, ct);
+
+    public async Task UpdateStatistic(TrackingStatistic trackingStatistic, CancellationToken ct) 
+        => await trackingsStatistics.ReplaceOneAsync(x => x.Id == trackingStatistic.Id, trackingStatistic, cancellationToken: ct);
+
+    public async Task<IEnumerable<TrackingStatistic>> GetStatistics(TimeRange timeRange, TimePeriod timePeriod, CancellationToken ct)
+    {
+        return await trackingsStatistics
+            .AsQueryable()
+            .Where(x => x.TimePeriod == timePeriod && x.TimeRange.From >= timeRange.From && x.TimeRange.To <= timeRange.To)
+            .ToListAsync();
+    }
 }
