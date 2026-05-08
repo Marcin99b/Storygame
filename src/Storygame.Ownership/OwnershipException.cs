@@ -1,6 +1,8 @@
-﻿namespace Storygame.Ownership;
+﻿using Storygame.Exceptions;
 
-public class OwnershipException(Guid objectOwnerId, Guid actionPerformer) : Exception
+namespace Storygame.Ownership;
+
+public class OwnershipException(Guid objectOwnerId, Guid actionPerformer) : StorygameException
 {
     public Guid ObjectOwnerId { get; } = objectOwnerId;
     public Guid ActionPerformer { get; } = actionPerformer;

@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Storygame.Exceptions\Storygame.Exceptions.csproj" />
-  </ItemGroup>
-
 </Project>
