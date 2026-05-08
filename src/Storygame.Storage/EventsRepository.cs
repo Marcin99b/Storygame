@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Storygame.Storage;
 
-public class EventsRepository(IMongoDatabase database)
+public class EventsRepository(IMongoDatabase database) : IEventsRepository
 {
     private readonly IMongoCollection<Event> events = database.GetCollection<Event>(DbCollectionNames.USERS);
 
@@ -38,16 +38,24 @@ public class EventsRepository(IMongoDatabase database)
         where T : Event
     {
         var collection = GetCollection<T>();
-        var queryable = collection.AsQueryable();
+        var queryable = collection.AsQueryable().OrderBy(x => x.CreatedAt);
         var indexes = queryable.Select((item, index) => new { Item = item, Index = index });
         var index = (await indexes.FirstAsync(x => x.Item.EventId == previousId, ct)).Index;
         var next = await indexes.FirstOrDefaultAsync(x => x.Index == index + 1, cancellationToken: ct);
         return next?.Item;
     }
 
-    private IMongoCollection<T> GetCollection<T>() 
+    public async Task<T?> GetFirst<T>(CancellationToken ct) where T : Event
+    {
+        var collection = GetCollection<T>();
+        var queryable = collection.AsQueryable().OrderBy(x => x.CreatedAt);
+        return await queryable.FirstOrDefaultAsync(ct);
+    }
+
+    private IMongoCollection<T> GetCollection<T>()
         where T : Event
     {
         return database.GetCollection<T>(DbCollectionNames.EVENTS_PREFIX + nameof(T));
     }
+
 }

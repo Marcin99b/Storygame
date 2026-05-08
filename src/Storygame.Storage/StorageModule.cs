@@ -42,6 +42,7 @@ public static class StorageModule
         services.AddSingleton<ILibraryRepository, LibraryRepository>();
         services.AddSingleton<ITrackingRepository, TrackingRepository>();
         services.AddSingleton<IUsersRepository, UsersRepository>();
+        services.AddSingleton<IEventsRepository, EventsRepository>();
     }
 
     private static bool _initialized = false;
