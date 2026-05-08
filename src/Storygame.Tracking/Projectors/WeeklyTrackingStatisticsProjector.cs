@@ -1,28 +1,29 @@
 ﻿using Storygame.Cqrs;
 using Storygame.Tracking.Events;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Storygame.Tracking.Projectors;
 
-public class DailyTrackingStatisticsProjector(ITrackingRepository trackingRepository) : IEventHandler<TrackingIndexUpdatedEvent>
+public class WeeklyTrackingStatisticsProjector(ITrackingRepository trackingRepository) : IEventHandler<TrackingIndexUpdatedEvent>
 {
     public async Task HandleAsync(TrackingIndexUpdatedEvent @event, CancellationToken ct)
     {
         var increment = @event.NewIndex - @event.OldIndex;
 
-        var stat = await trackingRepository.GetStatisticByTimePoint(@event.TrackingId, @event.CreatedAt, TimePeriod.Day, ct);
+        var date = @event.CreatedAt.Date;
+        int diff = (int)date.DayOfWeek - (int)DayOfWeek.Monday;
+        if (diff < 0) diff += 7;
+        var weekStart = date.AddDays(-diff);
+        var weekEnd = weekStart.AddDays(7).AddSeconds(-1);
+
+        var stat = await trackingRepository.GetStatisticByTimePoint(@event.TrackingId, @event.CreatedAt, TimePeriod.Week, ct);
         if (stat == null)
         {
             await trackingRepository.AddStatistic(new TrackingStatistic()
             {
                 Id = Guid.NewGuid(),
                 TrackingId = @event.TrackingId,
-                TimePeriod = TimePeriod.Day,
-                TimeRange = new TimeRange(@event.CreatedAt.Date, @event.CreatedAt.Date.AddDays(1).AddSeconds(-1)),
+                TimePeriod = TimePeriod.Week,
+                TimeRange = new TimeRange(weekStart, weekEnd),
                 Value = increment
             }, ct);
         }
