@@ -44,6 +44,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, IEventsReposito
         return eventsRepository.Publish(@event, ct);
     }
 
+    //todo it needs registration
     public async Task ConsumeWaitingEvents<TEvent>(CancellationToken ct)
         where TEvent : Event
     {
