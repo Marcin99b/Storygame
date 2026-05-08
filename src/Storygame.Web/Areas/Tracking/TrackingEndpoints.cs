@@ -18,7 +18,7 @@ public static class TrackingEndpoints
     {
         var group = app.MapGroup("/api/tracking").WithTags("Tracking")
             .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
-            .RequireRateLimiting("MainRateLimiter")
+            .RequireRateLimiting(AuthExtensions.MainRateLimiter)
             .ValidateAntiforgery();
 
         group.MapGet("/", GetTrackings);

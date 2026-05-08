@@ -17,7 +17,7 @@ public static class MailEndpoints
     {
         var group = app.MapGroup("/api/mail").WithTags("Mail")
             .AllowAnonymous()
-            .RequireRateLimiting("MainRateLimiter")
+            .RequireRateLimiting(AuthExtensions.MainRateLimiter)
             .ValidateAntiforgery();
 
         group.MapGet("/{email}", ReadMail);

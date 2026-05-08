@@ -55,7 +55,7 @@ builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = 429; 
 
-    options.AddPolicy("MainRateLimiter", httpContext =>
+    options.AddPolicy(AuthExtensions.MainRateLimiter, httpContext =>
         RateLimitPartition.GetSlidingWindowLimiter(
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             factory: _ => new SlidingWindowRateLimiterOptions
@@ -66,7 +66,7 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 0
             }));
 
-    options.AddPolicy("AuthRateLimiter", httpContext =>
+    options.AddPolicy(AuthExtensions.AuthRateLimiter, httpContext =>
         RateLimitPartition.GetSlidingWindowLimiter(
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             factory: _ => new SlidingWindowRateLimiterOptions

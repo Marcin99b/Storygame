@@ -16,7 +16,7 @@ public static class LibraryEndpoints
     {
         var group = app.MapGroup("/api/library").WithTags("Library")
             .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
-            .RequireRateLimiting("MainRateLimiter")
+            .RequireRateLimiting(AuthExtensions.MainRateLimiter)
             .ValidateAntiforgery();
 
         group.MapGet("/", GetLibrary);

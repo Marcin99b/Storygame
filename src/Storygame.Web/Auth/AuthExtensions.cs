@@ -8,6 +8,8 @@ namespace Storygame.Web.Auth;
 public static class AuthExtensions
 {
     public const string ActionIsRequestedByUserPolicy = "ActionIsRequestedByUser";
+    public const string MainRateLimiter = "MainRateLimiter";
+    public const string AuthRateLimiter = "AuthRateLimiter";
 
     public static void ConfigureCors(this IServiceCollection services, IConfiguration configuration)
     {

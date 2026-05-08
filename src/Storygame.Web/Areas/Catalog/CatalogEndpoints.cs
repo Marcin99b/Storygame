@@ -13,7 +13,7 @@ public static class CatalogEndpoints
     {
         var group = app.MapGroup("/api/catalog").WithTags("Catalog")
             .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
-            .RequireRateLimiting("MainRateLimiter")
+            .RequireRateLimiting(AuthExtensions.MainRateLimiter)
             .ValidateAntiforgery();
 
         group.MapGet("/", GetCatalog);

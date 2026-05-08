@@ -23,12 +23,12 @@ public static class UsersEndpoints
             .RequireAuthorization(AuthExtensions.ActionIsRequestedByUserPolicy)
             .ValidateAntiforgery();
 
-        group.MapGet("/Me", GetMe).RequireRateLimiting("MainRateLimiter");
-        group.MapPost("/Register", Register).AllowAnonymous().RequireRateLimiting("AuthRateLimiter");
-        group.MapPost("/Verify", Verify).AllowAnonymous().RequireRateLimiting("AuthRateLimiter");
-        group.MapPost("/Login", Login).AllowAnonymous().RequireRateLimiting("AuthRateLimiter");
-        group.MapPost("/ConfirmLogin", ConfirmLogin).AllowAnonymous().RequireRateLimiting("AuthRateLimiter");
-        group.MapPost("/Logout", Logout).RequireRateLimiting("AuthRateLimiter");
+        group.MapGet("/Me", GetMe).RequireRateLimiting(AuthExtensions.MainRateLimiter);
+        group.MapPost("/Register", Register).AllowAnonymous().RequireRateLimiting(AuthExtensions.AuthRateLimiter);
+        group.MapPost("/Verify", Verify).AllowAnonymous().RequireRateLimiting(AuthExtensions.AuthRateLimiter);
+        group.MapPost("/Login", Login).AllowAnonymous().RequireRateLimiting(AuthExtensions.AuthRateLimiter);
+        group.MapPost("/ConfirmLogin", ConfirmLogin).AllowAnonymous().RequireRateLimiting(AuthExtensions.AuthRateLimiter);
+        group.MapPost("/Logout", Logout).RequireRateLimiting(AuthExtensions.AuthRateLimiter);
 
         group.MapGet("/CSRF", (IAntiforgery forgery, HttpContext ctx) =>
         {
