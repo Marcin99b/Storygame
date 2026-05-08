@@ -7,6 +7,7 @@ using System.Text;
 
 namespace Storygame.Tests.Integration.Users;
 
+//todo add tests
 [TestFixture]
 public class UsersTests
 {
