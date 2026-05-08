@@ -60,7 +60,7 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 100,
+                PermitLimit = 1000000,//todo for tests
                 Window = TimeSpan.FromMinutes(1),
                 SegmentsPerWindow = 3,
                 QueueLimit = 0
@@ -71,7 +71,7 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit = 30,
+                PermitLimit = 30000,//todo for tests
                 Window = TimeSpan.FromMinutes(1),
                 SegmentsPerWindow = 3,
                 QueueLimit = 0

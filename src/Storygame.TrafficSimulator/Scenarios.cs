@@ -247,8 +247,8 @@ public static class Scenarios
 
     public static async Task CreateUserAndLogin(StorygameClient client)
     {
-        var name = "username_" + Guid.NewGuid().ToString();
-        var email = "email_" + Guid.NewGuid() + "@example.com";
+        var name = "username_" + new Random().Next(0,100);
+        var email = "email_" + new Random().Next(0, 10000) + "@example.com";
         await client.Register(new RegisterRequest(name, email));
 
         var mails = await client.Mail(email);

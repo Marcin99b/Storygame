@@ -2,4 +2,4 @@
 
 namespace Storygame.Contracts.WebApi;
 
-public record RegisterRequest([MaxLength(10)] string Name, [MaxLength(100)][EmailAddress] string Email);
+public record RegisterRequest([MaxLength(30)] string Name, [MaxLength(100)][EmailAddress] string Email);

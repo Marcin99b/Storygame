@@ -74,6 +74,7 @@ public class StorygameClient
     private async Task<TResponse> Get<TResponse>(string url)
     {
         var response = await HttpClient.GetAsync(url);
+        var text = await response.Content.ReadAsStringAsync();
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
         return (await response.Content.ReadFromJsonAsync<TResponse>(jsonOptions))!;
@@ -83,6 +84,7 @@ public class StorygameClient
     {
         await UpdateCSRF();
         var response = await HttpClient.PostAsync(url, null);
+        var text = await response.Content.ReadAsStringAsync();
         response.EnsureSuccessStatusCode();
         TryUpdateCookie(response);
     }
