@@ -1,7 +1,7 @@
 ﻿using Storygame.Cqrs;
 using Storygame.Tracking.Events;
 
-namespace Storygame.Tracking.Projectors;
+namespace Storygame.Tracking.Events.Consumers.Projectors;
 
 public class WeeklyTrackingStatisticsProjector(ITrackingRepository trackingRepository) : IEventHandler<TrackingIndexUpdatedEvent>
 {
