@@ -47,7 +47,7 @@ public static class UsersEndpoints
         return new MeResponse(user.Name);
     }
 
-    public static async Task Register(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, [FromBody] RegisterRequest request, CancellationToken ct)
+    public static async Task Register(IDispatcher dispatcher, UniversalThrottle throttle, HttpContext http, [FromBody] RegisterRequest request, CancellationToken ct)
     {
         if (!throttle.TryAcquire(nameof(Register), request.Email))
         {
@@ -59,7 +59,7 @@ public static class UsersEndpoints
         await dispatcher.SendAsync(command, ct);
     }
 
-    public static async Task Verify(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, [FromBody] VerifyUserRequest request, CancellationToken ct)
+    public static async Task Verify(IDispatcher dispatcher, UniversalThrottle throttle, HttpContext http, [FromBody] VerifyUserRequest request, CancellationToken ct)
     {
         if (!throttle.TryAcquire(nameof(Verify), request.Email))
         {
@@ -71,7 +71,7 @@ public static class UsersEndpoints
         await dispatcher.SendAsync(command, ct);
     }
 
-    public static async Task Login(IDispatcher dispatcher, PerEmailThrottle throttle, HttpContext http, SessionStorage sessionStorage, EmailClient emailClient, [FromBody] LoginRequest request, CancellationToken ct)
+    public static async Task Login(IDispatcher dispatcher, UniversalThrottle throttle, HttpContext http, SessionStorage sessionStorage, EmailClient emailClient, [FromBody] LoginRequest request, CancellationToken ct)
     {
         if (!throttle.TryAcquire(nameof(Login), request.Email))
         {
