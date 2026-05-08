@@ -4,6 +4,7 @@ using Storygame.Contracts.WebApi.Responses;
 using Storygame.Cqrs;
 using Storygame.Library.Queries;
 using Storygame.Ownership;
+using Storygame.Tracking;
 using Storygame.Tracking.Commands;
 using Storygame.Tracking.Queries;
 using Storygame.Web.Auth;
@@ -21,6 +22,7 @@ public static class TrackingEndpoints
             .ValidateAntiforgery();
 
         group.MapGet("/", GetTrackings);
+        group.MapGet("/{trackingId:guid}/stats", GetStatistics);
         group.MapPost("/", StartTracking);
         group.MapPost("/{trackingId:guid}/index", UpdateIndex);
 
@@ -32,6 +34,15 @@ public static class TrackingEndpoints
         var session = sessionProvider.GetSession(context);
         var result = await dispatcher.QueryAsync<GetUserTrackingsQuery, GetUserTrackingsQueryResult>(new GetUserTrackingsQuery(session.UserId), ct);
         return result.ToResponse();
+    }
+
+    public static async Task GetStatistics(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, CancellationToken ct, 
+        [FromRoute] Guid trackingId, [FromQuery] DateTime fromDateTime, [FromQuery] DateTime toDateTime, [FromQuery] TimePeriod timePeriod)
+    {
+        //todo check ownership of tracking
+        var query = new GetTrackingStatisticsQuery(trackingId, new TimeRange(fromDateTime, toDateTime), timePeriod);
+        var statistics = await dispatcher.QueryAsync<GetTrackingStatisticsQuery, GetTrackingStatisticsQueryResult>(query, ct);
+        //return statistics.ToResponse();
     }
 
     public static async Task StartTracking(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, [FromBody] StartTrackingRequest request, CancellationToken ct)
