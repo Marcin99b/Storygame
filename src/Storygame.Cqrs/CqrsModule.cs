@@ -10,6 +10,7 @@ public static class CqrsModule
     public static void RegisterCqrs(this IServiceCollection services)
     {
         services.AddSingleton<IDispatcher, Dispatcher>();
+        services.AddSingleton<IEventsConsumer, EventsConsumer>();
 
         //todo if handlers doesn't use request specific data, then it could be changed to singletons
         //todo - decide when there will be any performance problems

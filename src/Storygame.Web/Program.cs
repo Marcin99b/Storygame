@@ -6,6 +6,7 @@ using Storygame.Cqrs;
 using Storygame.Integrations.Email;
 using Storygame.Logging;
 using Storygame.Storage;
+using Storygame.Tracking.Events;
 using Storygame.Web.Areas.Catalog;
 using Storygame.Web.Areas.Library;
 using Storygame.Web.Areas.Mail;
@@ -153,6 +154,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+
+app.UseEventsConsumer(x => 
+{
+    x.Register<TrackingIndexUpdatedEvent>();
+});
 
 app.Run();
 

@@ -2,5 +2,5 @@
 
 public interface IEventsConsumer
 {
-    Task ConsumeWaitingEvents<TEvent>(CancellationToken ct) where TEvent : Event;
+    EventsConsumer Register<TEvent>() where TEvent : Event;
 }
