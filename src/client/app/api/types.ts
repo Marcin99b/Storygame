@@ -42,3 +42,12 @@ export interface MailMessage {
   message: string;
   sentAt: string;
 }
+
+export type TimePeriod = "Day" | "Week" | "Month" | "Year";
+
+export interface TrackingStatistic {
+  timePeriod: TimePeriod;
+  from: string;
+  to: string;
+  value: number;
+}

@@ -1,7 +1,7 @@
 import { useRevalidator } from "react-router";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { trackingApi } from "../api/tracking";
-import type { LibraryBook, Tracking } from "../api/types";
+import type { LibraryBook, TimePeriod, Tracking, TrackingStatistic } from "../api/types";
 import { MediaTypeBadge } from "./MediaTypeBadge";
 
 type Props = {
@@ -100,11 +100,144 @@ const UpdateProgressForm = ({
   );
 };
 
+const PERIODS: TimePeriod[] = ["Day", "Week", "Month", "Year"];
+
+const PERIOD_RANGE_DAYS: Record<TimePeriod, number> = {
+  Day: 14,
+  Week: 56,
+  Month: 180,
+  Year: 1825,
+};
+
+function formatBarLabel(from: string, period: TimePeriod): string {
+  const d = new Date(from);
+  if (period === "Day")
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  if (period === "Week") {
+    const jan1 = new Date(d.getFullYear(), 0, 1);
+    const week = Math.ceil(((d.getTime() - jan1.getTime()) / 86400000 + jan1.getDay() + 1) / 7);
+    return `W${week}`;
+  }
+  if (period === "Month")
+    return d.toLocaleDateString(undefined, { month: "short" });
+  return String(d.getFullYear());
+}
+
+const TrackingStatsPanel = ({
+  trackingId,
+  unit,
+}: {
+  trackingId: string;
+  unit: string;
+}) => {
+  const [period, setPeriod] = useState<TimePeriod>("Day");
+  const [stats, setStats] = useState<TrackingStatistic[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchStats = useCallback(
+    async (p: TimePeriod) => {
+      setLoading(true);
+      setError(null);
+      const to = new Date();
+      const from = new Date(to);
+      from.setDate(from.getDate() - PERIOD_RANGE_DAYS[p]);
+      try {
+        const result = await trackingApi.getStatistics(
+          trackingId,
+          p,
+          from.toISOString(),
+          to.toISOString()
+        );
+        setStats(result.trackingStatistics);
+      } catch {
+        setError("Failed to load statistics.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [trackingId]
+  );
+
+  useEffect(() => {
+    fetchStats(period);
+  }, [period, fetchStats]);
+
+  const maxValue = stats && stats.length > 0 ? Math.max(1, ...stats.map((s) => s.value)) : 1;
+
+  return (
+    <div className="mt-3 pt-3 border-t border-paper-200 dark:border-ink-700">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-medium text-ink-700/60 dark:text-paper-200/60">
+          Reading activity
+        </span>
+        <div className="flex gap-0.5">
+          {PERIODS.map((p) => (
+            <button
+              key={p}
+              onClick={() => setPeriod(p)}
+              className={`text-xs px-2 py-0.5 rounded cursor-pointer transition-colors ${
+                period === p
+                  ? "bg-plum-600 text-white"
+                  : "text-ink-700/50 dark:text-paper-200/50 hover:text-ink-800 dark:hover:text-paper-100"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading && (
+        <div className="h-20 flex items-center justify-center text-xs text-ink-700/40 dark:text-paper-200/40">
+          Loading…
+        </div>
+      )}
+
+      {error && <p className="text-xs text-red-600">{error}</p>}
+
+      {!loading && stats && (
+        stats.length === 0 ? (
+          <p className="text-xs text-ink-700/40 dark:text-paper-200/40 text-center py-4">
+            No activity in this period
+          </p>
+        ) : (
+          <div className="overflow-x-auto -mx-1 px-1">
+            <div
+              className="flex items-end gap-px"
+              style={{ minWidth: `${stats.length * 24}px` }}
+            >
+              {stats.map((s, i) => {
+                const heightPct = Math.max(4, Math.round((s.value / maxValue) * 100));
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1 min-w-0">
+                    <div className="relative w-full" style={{ height: "56px" }}>
+                      <div
+                        className="absolute bottom-0 w-full rounded-sm bg-gradient-to-t from-plum-600 to-amber-accent opacity-80"
+                        style={{ height: `${heightPct}%` }}
+                        title={`${s.value} ${unit}`}
+                      />
+                    </div>
+                    <span className="text-[9px] leading-tight text-ink-700/40 dark:text-paper-200/40 truncate w-full text-center">
+                      {formatBarLabel(s.from, period)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )
+      )}
+    </div>
+  );
+};
+
 export const LibraryBookCard = ({ book, tracking }: Props) => {
   const revalidator = useRevalidator();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingProgress, setEditingProgress] = useState(false);
+  const [showStats, setShowStats] = useState(false);
 
   const unit = book.lengthUnit.toLowerCase();
 
@@ -208,6 +341,22 @@ export const LibraryBookCard = ({ book, tracking }: Props) => {
 
       {tracking?.isFinished && (
         <ProgressBar current={tracking.totalLength} total={tracking.totalLength} />
+      )}
+
+      {tracking?.isStarted && (
+        <div className="mt-2 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setShowStats((s) => !s)}
+            className="text-xs text-ink-700/50 dark:text-paper-200/50 hover:text-plum-600 dark:hover:text-plum-500 transition-colors cursor-pointer"
+          >
+            {showStats ? "Hide stats ↑" : "Stats ↓"}
+          </button>
+        </div>
+      )}
+
+      {tracking?.isStarted && showStats && (
+        <TrackingStatsPanel trackingId={tracking.id} unit={unit} />
       )}
     </article>
   );
