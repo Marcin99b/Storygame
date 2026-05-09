@@ -3,6 +3,7 @@ using Microsoft.Net.Http.Headers;
 using Storygame.Client;
 using Storygame.Contracts.WebApi;
 using Storygame.Contracts.WebApi.Requests;
+using Storygame.Storage;
 using Storygame.Users;
 
 namespace Storygame.Tests.Integration.Client;
@@ -12,7 +13,10 @@ public class StorygameClientTests
 {
     private static StorygameClient CreateClient()
         => WebAppFactory.CreateStorygameClient(services =>
-            services.AddSingleton<IUsersRepository>(new InMemoryUsersRepository()));
+        {
+            services.AddSingleton<IUsersRepository>(new InMemoryUsersRepository());
+            services.AddSingleton<IEventsRepository>(new InMemoryEventsRepository());
+        });
 
     [Test]
     public async Task Register_SetsXCsrfTokenInHeaders()
