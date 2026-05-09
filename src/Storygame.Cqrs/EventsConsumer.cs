@@ -13,16 +13,16 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
     private readonly List<Task> tasks = [];
     private readonly CancellationTokenSource cancellationTokenSource = new();
 
-    public EventsConsumer Register<TEvent>() where TEvent : Event
+    public EventsConsumer Register<TEvent>(int msWaitWhenQueueEmpty = 1000) where TEvent : Event
     {
         var eventCacheKey = typeof(TEvent).Name;
-        var task = ConsumeWaitingEvents<TEvent>(eventCacheKey, cancellationTokenSource.Token);
+        var task = ConsumeWaitingEvents<TEvent>(eventCacheKey, msWaitWhenQueueEmpty, cancellationTokenSource.Token);
         tasks.Add(task);
         return this;
     }
 
     //todo it needs registration
-    private async Task ConsumeWaitingEvents<TEvent>(string eventCacheKey, CancellationToken ct)
+    private async Task ConsumeWaitingEvents<TEvent>(string eventCacheKey, int msWaitWhenQueueEmpty, CancellationToken ct)
         where TEvent : Event
     {
         while (!ct.IsCancellationRequested)
@@ -39,7 +39,7 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
                 lastExecutedEvents.AddOrUpdate(eventCacheKey, _ => @event.EventId, (_, _) => @event.EventId);
             }
 
-            await Task.Delay(1000, ct);
+            await Task.Delay(msWaitWhenQueueEmpty, ct);
         }
     }
 
@@ -61,6 +61,7 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
 
         while (!ct.IsCancellationRequested)
         {
+            //todo add batch
             var next = await eventsRepository.Next<TEvent>(previousId, ct);
             if (next == null)
             {

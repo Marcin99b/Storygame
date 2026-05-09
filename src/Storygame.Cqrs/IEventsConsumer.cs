@@ -2,5 +2,5 @@
 
 public interface IEventsConsumer
 {
-    EventsConsumer Register<TEvent>() where TEvent : Event;
+    EventsConsumer Register<TEvent>(int msWaitWhenQueueEmpty = 1000) where TEvent : Event;
 }
