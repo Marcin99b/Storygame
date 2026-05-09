@@ -35,14 +35,20 @@ public class EventsRepository(IMongoDatabase database) : IEventsRepository
 
     //todo speed up
     public async Task<T?> Next<T>(Guid previousId, CancellationToken ct)
-        where T : Event
+    where T : Event
     {
         var collection = GetCollection<T>();
-        var queryable = collection.AsQueryable().OrderBy(x => x.CreatedAt);
-        var indexes = queryable.Select((item, index) => new { Item = item, Index = index });
-        var index = (await indexes.FirstAsync(x => x.Item.EventId == previousId, ct)).Index;
-        var next = await indexes.FirstOrDefaultAsync(x => x.Index == index + 1, cancellationToken: ct);
-        return next?.Item;
+
+        var previous = await collection.AsQueryable()
+            .FirstOrDefaultAsync(x => x.EventId == previousId, ct);
+
+        if (previous == null)
+            return null;
+
+        return await collection.AsQueryable()
+            .Where(x => x.CreatedAt > previous.CreatedAt)
+            .OrderBy(x => x.CreatedAt)
+            .FirstOrDefaultAsync(ct);
     }
 
     public async Task<T?> GetFirst<T>(CancellationToken ct) where T : Event

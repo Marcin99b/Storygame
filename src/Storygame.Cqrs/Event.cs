@@ -2,6 +2,6 @@
 
 public record Event
 {
-    public Guid EventId { get; } = Guid.NewGuid();
-    public DateTime CreatedAt { get; } = DateTime.UtcNow;
+    public Guid EventId { get; private set; } = Guid.NewGuid();
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 }
