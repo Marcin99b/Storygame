@@ -55,7 +55,8 @@ public class EventsRepository(IMongoDatabase database) : IEventsRepository
     private IMongoCollection<T> GetCollection<T>()
         where T : Event
     {
-        return database.GetCollection<T>(DbCollectionNames.EVENTS_PREFIX + nameof(T));
+        var name = typeof(T).Name;
+        return database.GetCollection<T>(DbCollectionNames.EVENTS_PREFIX + name);
     }
 
 }
