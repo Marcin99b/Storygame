@@ -41,4 +41,14 @@ public static class DtoExtensions
             return new GetTrackingsResponse(trackings);
         }
     }
+
+    extension(GetTrackingStatisticsQueryResult result)
+    {
+        public GetStatisticsResponse ToResponse()
+        {
+            var statistics = result.TrackingStatistics.Select(x => new TrackingStatisticDto((TimePeriodDto) x.TimePeriod, x.TimeRange.From, x.TimeRange.To, x.Value))
+                .ToArray();
+            return new GetStatisticsResponse(statistics);
+        }
+    }
 }
