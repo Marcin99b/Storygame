@@ -14,7 +14,6 @@ public class DailyTrackingStatisticsProjector(ITrackingRepository trackingReposi
     {
         var increment = @event.NewIndex - @event.OldIndex;
 
-        //todo always return null - should be fixed
         var stat = await trackingRepository.GetStatisticByTimePoint(@event.TrackingId, @event.CreatedAt, TimePeriod.Day, ct);
         if (stat == null)
         {

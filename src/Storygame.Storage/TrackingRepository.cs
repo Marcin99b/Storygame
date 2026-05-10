@@ -40,6 +40,6 @@ public class TrackingRepository(IMongoDatabase database) : ITrackingRepository
     public async Task<TrackingStatistic?> GetStatisticByTimePoint(Guid trackingId, DateTime timePoint, TimePeriod timePeriod, CancellationToken ct)
     {
         return await trackingsStatistics
-            .AsQueryable().FirstOrDefaultAsync(x => x.TrackingId == trackingId && x.TimePeriod == timePeriod && x.TimeRange.From >= timePoint && x.TimeRange.To <= timePoint, ct);
+            .AsQueryable().FirstOrDefaultAsync(x => x.TrackingId == trackingId && x.TimePeriod == timePeriod && x.TimeRange.From <= timePoint && x.TimeRange.To >= timePoint, ct);
     }
 }
