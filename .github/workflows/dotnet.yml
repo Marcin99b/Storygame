@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build-and-test:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          dotnet test src/Storygame.Tests.Unit/Storygame.Tests.Unit.csproj \
+          dotnet test src/Tests/Storygame.Tests.Unit/Storygame.Tests.Unit.csproj \
             --no-build \
             --configuration Release \
             --verbosity normal \
@@ -45,7 +45,7 @@ jobs:
 
       - name: Run integration tests
         run: |
-          dotnet test src/Storygame.Tests.Integration/Storygame.Tests.Integration.csproj \
+          dotnet test src/Tests/Storygame.Tests.Integration/Storygame.Tests.Integration.csproj \
             --no-build \
             --configuration Release \
             --verbosity normal \
