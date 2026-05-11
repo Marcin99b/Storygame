@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Web;
 
 namespace Storygame.Client;
 
@@ -67,6 +68,10 @@ public class StorygameClient
 
     public Task<GetTrackingsResponse> GetTrackings() 
         => Get<GetTrackingsResponse>(TrackingPath);
+
+    //todo test
+    public Task<GetStatisticsResponse> GetStatistics(Guid trackingId, DateTime fromDateTime, DateTime toDateTime, TimePeriodDto timePeriod)
+        => Get<GetStatisticsResponse>(TrackingPath + $"/{trackingId}/stats?fromDateTime={fromDateTime}&toDateTime={toDateTime}&timePeriod={timePeriod}");
 
     public Task UpdateIndex(Guid trackingId, UpdateIndexRequest request) 
         => Post(TrackingPath + $"/{trackingId}/index", request);
