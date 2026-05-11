@@ -161,5 +161,3 @@ app.UseEventsConsumer(x =>
 });
 
 app.Run();
-
-public partial class Program;

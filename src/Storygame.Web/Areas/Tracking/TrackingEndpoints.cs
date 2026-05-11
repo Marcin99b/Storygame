@@ -36,8 +36,8 @@ public static class TrackingEndpoints
         return result.ToResponse();
     }
 
-    public static async Task<GetStatisticsResponse> GetStatistics(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, CancellationToken ct, 
-        [FromRoute] Guid trackingId, [FromQuery] DateTime fromDateTime, [FromQuery] DateTime toDateTime, [FromQuery] TimePeriod timePeriod)
+    public static async Task<GetStatisticsResponse> GetStatistics(IDispatcher dispatcher, UserSessionProvider sessionProvider, HttpContext context, 
+        [FromRoute] Guid trackingId, [FromQuery] DateTime fromDateTime, [FromQuery] DateTime toDateTime, [FromQuery] TimePeriod timePeriod, CancellationToken ct)
     {
         //todo add cache to checking ownership
         //todo check ownership of tracking

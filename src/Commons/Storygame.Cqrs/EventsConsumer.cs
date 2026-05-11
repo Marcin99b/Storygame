@@ -79,6 +79,7 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
         {
             cancellationTokenSource.Cancel();
             Task.WaitAll(tasks.ToArray());
+            GC.SuppressFinalize(this);
         }
     }
 }
