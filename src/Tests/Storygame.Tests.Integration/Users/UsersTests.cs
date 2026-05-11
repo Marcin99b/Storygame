@@ -11,7 +11,4 @@ namespace Storygame.Tests.Integration.Users;
 [TestFixture]
 public class UsersTests
 {
-    private static StorygameClient CreateClient()
-        => WebAppFactory.CreateStorygameClient(services =>
-            services.AddSingleton<IUsersRepository>(new InMemoryUsersRepository()));
 }

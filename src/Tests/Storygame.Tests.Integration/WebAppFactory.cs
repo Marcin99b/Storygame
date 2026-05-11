@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Storygame.Client;
+using Storygame.Storage;
+using Storygame.Users;
 
 namespace Storygame.Tests.Integration;
 
@@ -30,5 +33,17 @@ public static class WebAppFactory
     public static StorygameClient ToStorygameClient(this HttpClient httpClient)
     {
         return new StorygameClient(httpClient);
+    }
+
+    public static StorygameClient CreateClientWithDefaultMocks(bool mockDatabase = true)
+    {
+        return WebAppFactory.CreateStorygameClient(services =>
+        {
+            if (mockDatabase)
+            {
+                services.Replace(ServiceDescriptor.Singleton<IUsersRepository, InMemoryUsersRepository>());
+                services.Replace(ServiceDescriptor.Singleton<IEventsRepository, InMemoryEventsRepository>());
+            }
+        });
     }
 }
