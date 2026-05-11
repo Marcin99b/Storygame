@@ -8,16 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
     <PackageReference Include="MongoDB.Driver" Version="3.8.0" />
     <PackageReference Include="SharpCompress" Version="0.48.0" />
     <PackageReference Include="Snappier" Version="1.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Storygame.Catalog\Storygame.Catalog.csproj" />
-    <ProjectReference Include="..\Storygame.Library\Storygame.Library.csproj" />
-    <ProjectReference Include="..\Storygame.Tracking\Storygame.Tracking.csproj" />
-    <ProjectReference Include="..\Storygame.Users\Storygame.Users.csproj" />
+    <ProjectReference Include="..\..\Domain\Storygame.Library\Storygame.Library.csproj" />
+    <ProjectReference Include="..\..\Domain\Storygame.Tracking\Storygame.Tracking.csproj" />
+    <ProjectReference Include="..\..\Domain\Storygame.Users\Storygame.Users.csproj" />
   </ItemGroup>
 
 </Project>

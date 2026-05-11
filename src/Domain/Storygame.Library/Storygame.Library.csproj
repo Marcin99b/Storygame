@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Storygame.Cqrs\Storygame.Cqrs.csproj" />
-    <ProjectReference Include="..\Storygame.Ownership\Storygame.Ownership.csproj" />
+    <ProjectReference Include="..\..\Commons\Storygame.Cqrs\Storygame.Cqrs.csproj" />
+    <ProjectReference Include="..\..\Commons\Storygame.Ownership\Storygame.Ownership.csproj" />
   </ItemGroup>
 
 </Project>

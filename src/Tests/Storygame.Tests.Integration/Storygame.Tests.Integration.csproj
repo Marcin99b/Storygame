@@ -26,8 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Storygame.Client\Storygame.Client.csproj" />
-    <ProjectReference Include="..\Storygame.Web\Storygame.Web.csproj" />
+    <ProjectReference Include="..\..\Contracts\Storygame.Contracts.WebApi\Storygame.Contracts.WebApi.csproj" />
+    <ProjectReference Include="..\..\Domain\Storygame.Users\Storygame.Users.csproj" />
+    <ProjectReference Include="..\..\Storygame.Client\Storygame.Client.csproj" />
+    <ProjectReference Include="..\..\Storygame.Web\Storygame.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

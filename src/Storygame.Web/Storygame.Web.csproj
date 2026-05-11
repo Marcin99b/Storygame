@@ -15,15 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Storygame.Catalog\Storygame.Catalog.csproj" />
-    <ProjectReference Include="..\Storygame.Contracts.WebApi\Storygame.Contracts.WebApi.csproj" />
-    <ProjectReference Include="..\Storygame.Cqrs\Storygame.Cqrs.csproj" />
-    <ProjectReference Include="..\Storygame.Integrations.Email\Storygame.Integrations.Email.csproj" />
-    <ProjectReference Include="..\Storygame.Library\Storygame.Library.csproj" />
-    <ProjectReference Include="..\Storygame.Logging\Storygame.Logging.csproj" />
-    <ProjectReference Include="..\Storygame.Storage\Storygame.Storage.csproj" />
-    <ProjectReference Include="..\Storygame.Tracking\Storygame.Tracking.csproj" />
-    <ProjectReference Include="..\Storygame.Users\Storygame.Users.csproj" />
+    <ProjectReference Include="..\Commons\Storygame.Cqrs\Storygame.Cqrs.csproj" />
+    <ProjectReference Include="..\Commons\Storygame.Logging\Storygame.Logging.csproj" />
+    <ProjectReference Include="..\Commons\Storygame.Ownership\Storygame.Ownership.csproj" />
+    <ProjectReference Include="..\Commons\Storygame.Storage\Storygame.Storage.csproj" />
+    <ProjectReference Include="..\Contracts\Storygame.Contracts.WebApi\Storygame.Contracts.WebApi.csproj" />
+    <ProjectReference Include="..\Domain\Storygame.Catalog\Storygame.Catalog.csproj" />
+    <ProjectReference Include="..\Domain\Storygame.Library\Storygame.Library.csproj" />
+    <ProjectReference Include="..\Domain\Storygame.Tracking\Storygame.Tracking.csproj" />
+    <ProjectReference Include="..\Domain\Storygame.Users\Storygame.Users.csproj" />
+    <ProjectReference Include="..\Integrations\Storygame.Integrations.Email\Storygame.Integrations.Email.csproj" />
   </ItemGroup>
 
 </Project>
