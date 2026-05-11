@@ -38,8 +38,11 @@ public class StorygameClientTests
         await RegisterAndVerify(client, name, email);
         await PerformLogin(client, email);
 
-        Assert.That(client.HttpClient.DefaultRequestHeaders.TryGetValues(HeaderNames.Cookie, out var cookies), Is.True);
-        Assert.That(cookies!.Single(), Does.Contain("__Host-Auth"));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(client.HttpClient.DefaultRequestHeaders.TryGetValues(HeaderNames.Cookie, out var cookies), Is.True);
+            Assert.That(cookies!.Single(), Does.Contain("__Host-Auth"));
+        }
     }
 
     [Test]

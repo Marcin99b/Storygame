@@ -1,4 +1,6 @@
-﻿var url = new Uri("https://localhost:7121");
+﻿using Storygame.TrafficSimulator;
+
+var url = new Uri("https://localhost:7121");
 
 
 Console.WriteLine("Starting scenarios");

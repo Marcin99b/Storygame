@@ -6,6 +6,8 @@ using Storygame.Contracts.WebApi;
 using Storygame.Contracts.WebApi.Dtos;
 using Storygame.Contracts.WebApi.Requests;
 
+namespace Storygame.TrafficSimulator;
+
 public static class Scenarios
 {
     private static readonly Random Rng = new();
@@ -247,7 +249,7 @@ public static class Scenarios
 
     public static async Task CreateUserAndLogin(StorygameClient client)
     {
-        var name = "username_" + new Random().Next(0,100);
+        var name = "username_" + new Random().Next(0, 100);
         var email = "email_" + new Random().Next(0, 10000) + "@example.com";
         await client.Register(new RegisterRequest(name, email));
 
