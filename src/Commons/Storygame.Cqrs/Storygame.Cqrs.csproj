@@ -10,6 +10,7 @@
     <PackageReference Include="Gantry.NET" Version="1.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Scrutor" Version="7.0.0" />
   </ItemGroup>
 

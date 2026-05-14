@@ -1,12 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Gantry.NET;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Storygame.Logging;
 using Storygame.Storage;
 
 namespace Storygame.Cqrs;
 
-public sealed class Dispatcher(IServiceProvider serviceProvider, IEventsRepository eventsRepository, ILogger<Dispatcher> logger) : IDispatcher
+public sealed class Dispatcher(IServiceProvider serviceProvider, IEventsRepository eventsRepository, IGantryClient gantryClient, ILogger<Dispatcher> logger) : IDispatcher
 {
+    private bool USE_GANTRY = false;
+
     public Task<TResult> QueryAsync<TQuery, TResult>(TQuery query, CancellationToken ct)
         where TQuery : IQuery<TResult>
     {
@@ -31,11 +35,25 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, IEventsReposito
         return handler.HandleAsync(command, ct);
     }
 
-    public Task PublishAsync<TEvent>(TEvent @event, CancellationToken ct)
+    public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken ct)
         where TEvent : Event
     {
         ct.ThrowIfCancellationRequested();
         logger.PublishingEvent(typeof(TEvent).Name);
-        return eventsRepository.Publish(@event, ct);
+        if (!USE_GANTRY)
+        {
+            await eventsRepository.Publish(@event, ct);
+            return;
+        }
+
+        try
+        {
+            var json = JsonConvert.SerializeObject(@event);
+            await gantryClient.Put(json);
+        }
+        finally
+        {
+            await eventsRepository.Publish(@event, ct);
+        }
     }
 }
