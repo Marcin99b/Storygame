@@ -36,8 +36,11 @@ public class StorygameClient
         HttpClient = httpClient;
     }
 
-    public Task Login(LoginRequest request) 
+    public Task Login(LoginRequest request)
         => Post(UsersPath + "/Login", request);
+
+    public Task Logout()
+        => Post(UsersPath + "/Logout");
 
     public Task ConfirmLogin(ConfirmLoginRequest request)
         => Post(UsersPath + "/ConfirmLogin", request);
@@ -54,8 +57,15 @@ public class StorygameClient
     public Task<MeResponse> Me() 
         => Get<MeResponse>(UsersPath + "/Me");
 
-    public Task<GetCatalogResponse> GetCatalog() 
-        => Get<GetCatalogResponse>(CatalogPath);
+    public Task<GetCatalogResponse> GetCatalog(string? titleContains = null, bool? hasTextEdition = null, bool? hasAudiobook = null)
+    {
+        var query = new List<string>();
+        if (titleContains != null) query.Add($"titleContains={Uri.EscapeDataString(titleContains)}");
+        if (hasTextEdition != null) query.Add($"hasTextEdition={hasTextEdition.Value.ToString().ToLower()}");
+        if (hasAudiobook != null) query.Add($"hasAudiobook={hasAudiobook.Value.ToString().ToLower()}");
+        var qs = query.Count > 0 ? "?" + string.Join("&", query) : "";
+        return Get<GetCatalogResponse>(CatalogPath + qs);
+    }
 
     public Task AddToLibrary(AddToLibraryRequest request) 
         => Post(LibraryPath, request);
@@ -69,9 +79,8 @@ public class StorygameClient
     public Task<GetTrackingsResponse> GetTrackings() 
         => Get<GetTrackingsResponse>(TrackingPath);
 
-    //todo test
     public Task<GetStatisticsResponse> GetStatistics(Guid trackingId, DateTime fromDateTime, DateTime toDateTime, TimePeriodDto timePeriod)
-        => Get<GetStatisticsResponse>(TrackingPath + $"/{trackingId}/stats?fromDateTime={fromDateTime}&toDateTime={toDateTime}&timePeriod={timePeriod}");
+        => Get<GetStatisticsResponse>(TrackingPath + $"/{trackingId}/stats?fromDateTime={fromDateTime:O}&toDateTime={toDateTime:O}&timePeriod={timePeriod}");
 
     public Task UpdateIndex(Guid trackingId, UpdateIndexRequest request) 
         => Post(TrackingPath + $"/{trackingId}/index", request);

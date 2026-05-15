@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Storygame.Client;
+using Storygame.Library;
 using Storygame.Storage;
+using Storygame.Tracking;
 using Storygame.Users;
 
 namespace Storygame.Tests.Integration;
@@ -43,6 +45,8 @@ public static class WebAppFactory
             {
                 services.Replace(ServiceDescriptor.Singleton<IUsersRepository, InMemoryUsersRepository>());
                 services.Replace(ServiceDescriptor.Singleton<IEventsRepository, InMemoryEventsRepository>());
+                services.Replace(ServiceDescriptor.Singleton<ILibraryRepository, InMemoryLibraryRepository>());
+                services.Replace(ServiceDescriptor.Singleton<ITrackingRepository, InMemoryTrackingRepository>());
             }
         });
     }

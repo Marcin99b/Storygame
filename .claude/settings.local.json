@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\marci\\\\Desktop\\\\Storygame\\\\.claude\\\\worktrees\\\\inspiring-engelbart-b49759\" -Recurse -Filter \"*.csproj\")",
+      "Bash(Select-Object FullName)",
+      "Bash(ConvertTo-Csv -NoTypeInformation)",
+      "Bash(Out-String)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)",
+      "Bash(git fetch *)",
+      "Bash(git merge *)",
+      "Bash(Select-String -Pattern \"\\(Passed|Failed|Error|passed|failed\\)\")",
+      "Bash(Select-Object -Last 30)",
+      "Bash(git add *)"
+    ]
+  }
+}
