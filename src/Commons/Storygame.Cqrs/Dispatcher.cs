@@ -38,8 +38,9 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, IEventsReposito
     public async Task PublishAsync<TEvent>(TEvent @event, CancellationToken ct)
         where TEvent : Event
     {
+        var type = typeof(TEvent);
         ct.ThrowIfCancellationRequested();
-        logger.PublishingEvent(typeof(TEvent).Name);
+        logger.PublishingEvent(type.Name);
         if (!USE_GANTRY)
         {
             await eventsRepository.Publish(@event, ct);
@@ -49,7 +50,7 @@ public sealed class Dispatcher(IServiceProvider serviceProvider, IEventsReposito
         try
         {
             var json = JsonConvert.SerializeObject(@event);
-            await gantryClient.Put(json);
+            await gantryClient.Put((uint)type.GetHashCode(), json, ct);
         }
         finally
         {
