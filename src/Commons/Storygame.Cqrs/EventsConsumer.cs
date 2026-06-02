@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Gantry.NET;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Storygame.Storage;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -6,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Storygame.Cqrs;
 
-public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository eventsRepository) : IEventsConsumer, IDisposable
+public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository eventsRepository, IGantryClient gantryClient) : IEventsConsumer, IDisposable
 {
     //todo persistent
     private readonly ConcurrentDictionary<string, Guid> lastExecutedEvents = new ConcurrentDictionary<string, Guid>();
@@ -22,7 +24,6 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
         return this;
     }
 
-    //todo it needs registration
     private async Task ConsumeWaitingEvents<TEvent>(string eventCacheKey, int msWaitWhenQueueEmpty, CancellationToken ct)
         where TEvent : Event
     {
@@ -71,6 +72,34 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
 
             yield return next;
             previousId = next.EventId;
+        }
+    }
+
+    private async Task ConsumeWaitingEventsGantry<TEvent>(string eventCacheKey, int msWaitWhenQueueEmpty, CancellationToken ct)
+        where TEvent : Event
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            uint nextEventOffset = lastExecutedEventsGantry.ContainsKey(eventCacheKey) switch
+            {
+                true => lastExecutedEventsGantry[eventCacheKey] + 1,
+                false => 0
+            };
+
+            while (!ct.IsCancellationRequested)
+            {
+                //todo get topic id
+                var message = await gantryClient.GetAsString(0, nextEventOffset, ct);
+                var @event = JsonConvert.DeserializeObject<TEvent>(message);
+
+                using var scope = serviceProvider.CreateScope();
+                var handlers = scope.ServiceProvider.GetServices<IEventHandler<TEvent>>()!;
+                //todo error handling
+                var tasks = handlers.Select(x => x.HandleAsync(@event, ct));
+                await Task.WhenAll(tasks);
+                lastExecutedEventsGantry.AddOrUpdate(eventCacheKey, _ => nextEventOffset, (_, _) => nextEventOffset);
+                nextEventOffset++;
+            }
         }
     }
 
