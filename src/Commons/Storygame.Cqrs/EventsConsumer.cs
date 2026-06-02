@@ -10,6 +10,7 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
 {
     //todo persistent
     private readonly ConcurrentDictionary<string, Guid> lastExecutedEvents = new ConcurrentDictionary<string, Guid>();
+    private readonly ConcurrentDictionary<string, uint> lastExecutedEventsGantry = new ConcurrentDictionary<string, uint>();
     private readonly List<Task> tasks = [];
     private readonly CancellationTokenSource cancellationTokenSource = new();
 
