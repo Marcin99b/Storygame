@@ -80,26 +80,38 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
     {
         while (!ct.IsCancellationRequested)
         {
-            uint nextEventOffset = lastExecutedEventsGantry.ContainsKey(eventCacheKey) switch
+            await foreach (var (@event, offset) in GetEventsLoopGantry<TEvent>(eventCacheKey, ct))
             {
-                true => lastExecutedEventsGantry[eventCacheKey] + 1,
-                false => 0
-            };
-
-            while (!ct.IsCancellationRequested)
-            {
-                //todo get topic id
-                var message = await gantryClient.GetAsString(0, nextEventOffset, ct);
-                var @event = JsonConvert.DeserializeObject<TEvent>(message);
-
                 using var scope = serviceProvider.CreateScope();
                 var handlers = scope.ServiceProvider.GetServices<IEventHandler<TEvent>>()!;
                 //todo error handling
                 var tasks = handlers.Select(x => x.HandleAsync(@event, ct));
-                await Task.WhenAll(tasks);
-                lastExecutedEventsGantry.AddOrUpdate(eventCacheKey, _ => nextEventOffset, (_, _) => nextEventOffset);
-                nextEventOffset++;
+                lastExecutedEventsGantry.AddOrUpdate(eventCacheKey, _ => offset, (_, _) => offset);
             }
+        }
+    }
+
+    private async IAsyncEnumerable<(TEvent Event, uint Offset)> GetEventsLoopGantry<TEvent>(string eventCacheKey, [EnumeratorCancellation] CancellationToken ct) where TEvent : Event
+    {
+        uint offset = lastExecutedEventsGantry.ContainsKey(eventCacheKey) switch
+        {
+            true => lastExecutedEventsGantry[eventCacheKey] + 1,
+            false => 0
+        };
+
+        while (!ct.IsCancellationRequested)
+        {
+            //todo get topic id
+            var message = await gantryClient.GetAsString(0, offset, ct);
+            if (message == null)
+            {
+                break;
+            }
+
+            var @event = JsonConvert.DeserializeObject<TEvent>(message)!;
+
+            yield return (@event, offset);
+            offset++;
         }
     }
 
