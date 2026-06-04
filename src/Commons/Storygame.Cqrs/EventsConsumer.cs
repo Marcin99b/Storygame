@@ -10,6 +10,8 @@ namespace Storygame.Cqrs;
 
 public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository eventsRepository, IGantryClient gantryClient) : IEventsConsumer, IDisposable
 {
+    private bool USE_GANTRY = false;
+
     //todo persistent
     private readonly ConcurrentDictionary<string, Guid> lastExecutedEvents = new ConcurrentDictionary<string, Guid>();
     private readonly ConcurrentDictionary<string, uint> lastExecutedEventsGantry = new ConcurrentDictionary<string, uint>();
@@ -19,7 +21,9 @@ public class EventsConsumer(IServiceProvider serviceProvider, IEventsRepository 
     public EventsConsumer Register<TEvent>(int msWaitWhenQueueEmpty = 1000) where TEvent : Event
     {
         var eventCacheKey = typeof(TEvent).Name;
-        var task = ConsumeWaitingEvents<TEvent>(eventCacheKey, msWaitWhenQueueEmpty, cancellationTokenSource.Token);
+        var task = USE_GANTRY 
+            ? ConsumeWaitingEventsGantry<TEvent>(eventCacheKey, msWaitWhenQueueEmpty, cancellationTokenSource.Token) 
+            : ConsumeWaitingEvents<TEvent>(eventCacheKey, msWaitWhenQueueEmpty, cancellationTokenSource.Token);
         tasks.Add(task);
         return this;
     }
